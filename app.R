@@ -8,11 +8,11 @@ library(shiny)
 # UI ----------------------------------------------------------------------
 ui <- shiny::tagList(
 
-   shinythemes::shinytheme(theme = "united"),
-
-   # shinythemes::themeSelector(),
+   shiny::includeCSS(path = "style.css"),
 
    shiny::navbarPage(
+
+      theme = shinythemes::shinytheme(theme = "united"),
 
       title = "Encor",
 
@@ -42,11 +42,25 @@ ui <- shiny::tagList(
                selected = "Número ideal de hijos"
             ),
 
-            shiny::strong("Pregunta:"),
+            shiny::p("Fuente: Instituto Nacional de Estadística")
 
          ),
 
          shiny::mainPanel(
+
+            shiny::div(
+
+               class = 'questionDiv',
+
+               shiny::h3(
+
+                  shiny::textOutput(
+                     outputId = "textopregunta"
+                  )
+
+               )
+
+            ),
 
             plotly::plotlyOutput(
                outputId = "plot"
@@ -188,6 +202,32 @@ server <- function(input, output) {
 
    }
 
+   ## Texto de la pregunta
+   output$textopregunta <- shiny::renderText({
+
+      textopregunta <- dplyr::case_when(
+
+         input$pregunta == "Edad límite inferior para tener relaciones sexuales (mujeres)" ~ "A qué edad le parece que una mujer es demasiado joven para tener relaciones sexuales?",
+         input$pregunta == "Edad límite inferior para tener hijes (mujeres)" ~ "¿A qué edad le parece que una mujer es demasiado joven para tener hijos?",
+         input$pregunta == "Edad límite superior para tener hijes (mujeres)" ~ "¿A qué edad le parece que una mujer es demasiado mayor para tener hijos?",
+         input$pregunta == "Edad límite inferior para abandonar estudios (mujeres)" ~ "¿A qué edad le parece que una mujer es demasiado joven para abandonar los estudios en forma definitiva?",
+         input$pregunta == "Edad límite inferior para tener relaciones sexuales (hombres)" ~ "¿A qué edad le parece que un hombre es demasiado joven para tener relaciones sexuales?",
+         input$pregunta == "Edad límite inferior para tener hijes (hombres)" ~ "¿A qué edad le parece que un hombre es demasiado joven para tener hijos?",
+         input$pregunta == "Edad límite superior para tener hijes (hombres)" ~ "¿A qué edad le parece que un hombre es demasiado mayor para tener hijos?",
+         input$pregunta == "Edad límite inferior para abandonar estudios (hombres)" ~ "¿A qué edad le parece que un hombre es demasiado joven para abandonar los estudios en forma definitiva?",
+
+         input$pregunta == "Número ideal de hijes" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían?",
+         input$pregunta == "Edad ideal para tener el primer hije" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería?",
+
+         TRUE ~ input$pregunta
+      )
+
+      base::paste("Pregunta:", textopregunta)
+
+   })
+
+
+   ## Plot de resultados
    output$plot <- plotly::renderPlotly({
 
       question_set <- dplyr::case_when(
