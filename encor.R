@@ -69,88 +69,14 @@ encor %<>%
 
 readr::write_rds(x = encor, path = here::here("encore.rds"))
 
+## agregar inas adicionales
 
-encor %>%
-   dplyr::mutate(
-      variable := cantidad_ideal_hijos
-   ) %>%
-   dplyr::filter(
-      tuvo_hijos == "Sí"
-   ) %>%
-   base::droplevels() %>%
-   dplyr::group_by(
-      sexo,
-      variable
-   ) %>%
-   dplyr::summarise(
-      n = dplyr::n()
-   ) %>%
-   dplyr::mutate(
-      prop = n / base::sum(n)
-   ) %>%
-   plotly::plot_ly() %>%
-   plotly::add_trace(
-      x = ~variable,
-      y = ~prop,
-      color = ~sexo,
-      type = "bar",
-      hovertemplate = ~base::paste0(
-         "%{y:0.2%}"
-      )
-   ) %>%
-   plotly::layout(
-      xaxis = base::list(
-         title = "titulo"
-      ),
-      yaxis = base::list(
-         title = "<b>Porcentaje</b>",
-         tickformat = "%"
-      ),
-      legend = base::list(
-         title = base::list(
-            text = "<b>Sexo de quien<br>responde<b>"
-         ),
-         bgcolor = "#E2E2E2",
-         orientation = "h",
-         yanchor = "bottom",
-         xanchor = "left",
-         y = -.40
-      )
-   ) %>%
-   plotly::config(
-      locale = "es",
-      displayModeBar = TRUE
-   )
 
 
 
 # para comparar -----------------------------------------------------------
-encor %>%
-   dplyr::select(
-      sexo,
-      ina44_1, # !!rlang::sym(mujer),
-      ina48_1, #!!rlang::sym(hombre),
-      peso
-   ) %>%
-   dplyr::gather(
-      key = pregunta,
-      value = edad,
-      -sexo,
-      -peso
-   ) %>%
-   dplyr::mutate(
-      pregunta = dplyr::case_when(
-         pregunta == "ina44_1" ~ "Mujer",
-         pregunta == "ina48_1" ~ "Hombre",
-      ),
-      sexo = forcats::as_factor(sexo),
-      sexo = forcats::fct_recode(
-         .f = sexo,
-         "La encuestada es mujer" = "mujer",
-         "El encuestado es hombre" = "hombre"
-      )
-   )
 
+## hace scatter plots donde el tamaño sea la cantidad de personas que contestaron a esa pregutna en esas cantidades
 
 #===============#
 #### THE END ####
