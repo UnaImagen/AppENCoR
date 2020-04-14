@@ -129,7 +129,7 @@ server <- function(input, output) {
          ) %>%
          plotly::layout(
             xaxis = base::list(
-               title = "titulo"
+               title = titulo
             ),
             yaxis = base::list(
                title = "<b>Porcentaje</b>",
