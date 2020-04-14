@@ -18,7 +18,7 @@ ui <- shiny::tagList(
 
       shiny::tabPanel(
 
-         title = "Resultados",
+         title = "Ideales",
 
          shiny::sidebarPanel(
 
@@ -28,18 +28,10 @@ ui <- shiny::tagList(
                inputId = "pregunta",
                label = "Seleccione una pregunta",
                choices = base::c(
-                  "Número ideal de hijes",
-                  "Edad ideal para tener el primer hije",
-                  "Edad límite inferior para tener relaciones sexuales (mujeres)",
-                  "Edad límite inferior para tener hijes (mujeres)",
-                  "Edad límite superior para tener hijes (mujeres)",
-                  "Edad límite inferior para abandonar estudios (mujeres)",
-                  "Edad límite inferior para tener relaciones sexuales (hombres)",
-                  "Edad límite inferior para tener hijes (hombres)",
-                  "Edad límite superior para tener hijes (hombres)",
-                  "Edad límite inferior para abandonar estudios (hombres)"
+                  "Cantidad ideal de hijes",
+                  "Edad ideal para tener el primer hije"
                ),
-               selected = "Número ideal de hijos"
+               selected = "Cantidad ideal de hijes"
             ),
 
             shiny::p("Fuente: Instituto Nacional de Estadística")
@@ -55,7 +47,7 @@ ui <- shiny::tagList(
                shiny::h3(
 
                   shiny::textOutput(
-                     outputId = "textopregunta"
+                     outputId = "texto_pregunta_sup"
                   )
 
                )
@@ -63,7 +55,25 @@ ui <- shiny::tagList(
             ),
 
             plotly::plotlyOutput(
-               outputId = "plot"
+               outputId = "plot_sup"
+            ),
+
+            shiny::div(
+
+               class = 'questionDiv',
+
+               shiny::h3(
+
+                  shiny::textOutput(
+                     outputId = "texto_pregunta_inf"
+                  )
+
+               )
+
+            ),
+
+            plotly::plotlyOutput(
+               outputId = "plot_inf"
             )
 
          )
@@ -82,18 +92,21 @@ server <- function(input, output) {
    encor <- readr::read_rds(path = "encore.rds")
 
    ## Plotly functions
-   plotly_questions <- function(q1) {
+   plotly_questions_one <- function(q, th) {
 
       titulo <- dplyr::case_when(
-         q1 %in% base::c("ina44_1", "ina45_1", "ina47_1", "ina48_1", "ina49_1", "ina51_1") ~ "<b>Edad límite inferior</b>",
-         q1 %in% base::c("ina46_1", "ina50_1") ~ "<b>Edad límite superior</b>"
+         q == "cantidad_ideal_hijos" ~ "<b>Cantidad ideal de hijes</b>",
+         q == "edad_ideal_primer_hijo" ~ "<b>Edad ideal para primer hije</b>"
       )
 
       encor %>%
-         dplyr::transmute(
-            sexo,
-            variable := !!rlang::sym(q1)
+         dplyr::mutate(
+            variable := !!rlang::sym(q)
          ) %>%
+         dplyr::filter(
+            tuvo_hijos == th
+         ) %>%
+         base::droplevels() %>%
          dplyr::group_by(
             sexo,
             variable
@@ -116,7 +129,7 @@ server <- function(input, output) {
          ) %>%
          plotly::layout(
             xaxis = base::list(
-               title = titulo
+               title = "titulo"
             ),
             yaxis = base::list(
                title = "<b>Porcentaje</b>",
@@ -140,147 +153,62 @@ server <- function(input, output) {
 
    }
 
-   plotly_questions2 <- function(q1, q2) {
+   var_name <- shiny::reactive({
 
-      titulo <- dplyr::case_when(
-         q1 == "ina40_1" ~ "<b>Cantidad ideal de hijes</b>",
-         q1 == "ina41_1" ~ "<b>Edad ideal para primer hije</b>"
+      dplyr::case_when(
+
+         input$pregunta == "Cantidad ideal de hijes" ~ "cantidad_ideal_hijos",
+         input$pregunta == "Edad ideal para tener el primer hije" ~ "edad_ideal_primer_hijo"
+
       )
-
-      encor %>%
-         dplyr::mutate(
-            variable = dplyr::if_else(is.na(!!rlang::sym(q1)), !!rlang::sym(q2), !!rlang::sym(q1)),
-            variable = forcats::as_factor(variable),
-            variable = forcats::fct_explicit_na(
-               f = variable,
-               na_level = "Ns/Nc"
-            )
-         ) %>%
-         dplyr::group_by(
-            sexo,
-            variable
-         ) %>%
-         dplyr::summarise(
-            n = dplyr::n()
-         ) %>%
-         dplyr::mutate(
-            prop = n / base::sum(n)
-         ) %>%
-         plotly::plot_ly() %>%
-         plotly::add_trace(
-            x = ~variable,
-            y = ~prop,
-            color = ~sexo,
-            type = "bar",
-            hovertemplate = ~base::paste0(
-               "%{y:0.2%}"
-            )
-         ) %>%
-         plotly::layout(
-            xaxis = base::list(
-               title = titulo
-            ),
-            yaxis = base::list(
-               title = "<b>Porcentaje</b>",
-               tickformat = "%"
-            ),
-            legend = base::list(
-               title = base::list(
-                  text = "<b>Sexo de quien<br>responde<b>"
-               ),
-               bgcolor = "#E2E2E2",
-               orientation = "h",
-               yanchor = "bottom",
-               xanchor = "left",
-               y = -.40
-            )
-         ) %>%
-         plotly::config(
-            locale = "es",
-            displayModeBar = TRUE
-         )
-
-   }
-
-   ## Texto de la pregunta
-   output$textopregunta <- shiny::renderText({
-
-      textopregunta <- dplyr::case_when(
-
-         input$pregunta == "Edad límite inferior para tener relaciones sexuales (mujeres)" ~ "A qué edad le parece que una mujer es demasiado joven para tener relaciones sexuales?",
-         input$pregunta == "Edad límite inferior para tener hijes (mujeres)" ~ "¿A qué edad le parece que una mujer es demasiado joven para tener hijos?",
-         input$pregunta == "Edad límite superior para tener hijes (mujeres)" ~ "¿A qué edad le parece que una mujer es demasiado mayor para tener hijos?",
-         input$pregunta == "Edad límite inferior para abandonar estudios (mujeres)" ~ "¿A qué edad le parece que una mujer es demasiado joven para abandonar los estudios en forma definitiva?",
-         input$pregunta == "Edad límite inferior para tener relaciones sexuales (hombres)" ~ "¿A qué edad le parece que un hombre es demasiado joven para tener relaciones sexuales?",
-         input$pregunta == "Edad límite inferior para tener hijes (hombres)" ~ "¿A qué edad le parece que un hombre es demasiado joven para tener hijos?",
-         input$pregunta == "Edad límite superior para tener hijes (hombres)" ~ "¿A qué edad le parece que un hombre es demasiado mayor para tener hijos?",
-         input$pregunta == "Edad límite inferior para abandonar estudios (hombres)" ~ "¿A qué edad le parece que un hombre es demasiado joven para abandonar los estudios en forma definitiva?",
-
-         input$pregunta == "Número ideal de hijes" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían?",
-         input$pregunta == "Edad ideal para tener el primer hije" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería?",
-
-         TRUE ~ input$pregunta
-      )
-
-      base::paste("Pregunta:", textopregunta)
 
    })
 
+   ## Texto de la pregunta superior
+   output$texto_pregunta_sup <- shiny::renderText({
 
-   ## Plot de resultados
-   output$plot <- plotly::renderPlotly({
+      texto_pregunta <- dplyr::case_when(
 
-      question_set <- dplyr::case_when(
-
-         input$pregunta %in% base::c(
-            "Edad límite inferior para tener relaciones sexuales (mujeres)",
-            "Edad límite inferior para tener hijes (mujeres)",
-            "Edad límite superior para tener hijes (mujeres)",
-            "Edad límite inferior para abandonar estudios (mujeres)",
-            "Edad límite inferior para tener relaciones sexuales (hombres)",
-            "Edad límite inferior para tener hijes (hombres)",
-            "Edad límite superior para tener hijes (hombres)",
-            "Edad límite inferior para abandonar estudios (hombres)"
-         ) ~ 1,
-
-         input$pregunta %in% base::c(
-            "Número ideal de hijes",
-            "Edad ideal para tener el primer hije"
-         ) ~ 2
+         input$pregunta == "Cantidad ideal de hijes" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían? (Para quienes tuvieron hijos)",
+         input$pregunta == "Edad ideal para tener el primer hije" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería? (Para quienes tuvieron hijos)"
 
       )
 
-      var_id <- dplyr::case_when(
+      base::paste("Pregunta:", texto_pregunta)
 
-         input$pregunta == "Edad límite inferior para tener relaciones sexuales (mujeres)" ~ "ina44_1",
-         input$pregunta == "Edad límite inferior para tener hijes (mujeres)" ~ "ina45_1",
-         input$pregunta == "Edad límite superior para tener hijes (mujeres)" ~ "ina46_1",
-         input$pregunta == "Edad límite inferior para abandonar estudios (mujeres)" ~ "ina47_1",
-         input$pregunta == "Edad límite inferior para tener relaciones sexuales (hombres)" ~ "ina48_1",
-         input$pregunta == "Edad límite inferior para tener hijes (hombres)" ~ "ina49_1",
-         input$pregunta == "Edad límite superior para tener hijes (hombres)" ~ "ina50_1",
-         input$pregunta == "Edad límite inferior para abandonar estudios (hombres)" ~ "ina51_1",
+   })
 
-         input$pregunta == "Número ideal de hijes" ~ base::c("ina40_1", "ina42_1"),
-         input$pregunta == "Edad ideal para tener el primer hije" ~ base::c("ina41_1", "ina43_1"),
+   ## Plot superior
+   output$plot_sup <- plotly::renderPlotly({
 
-         TRUE ~ input$pregunta
+      plotly_questions_one(
+         q = var_name(),
+         th = "Sí"
       )
 
-      if (question_set == 1) {
+   })
 
-         plotly_questions(
-            q1 = var_id[1]
-         )
+   ## Texto de la pregunta inferior
+   output$texto_pregunta_inf <- shiny::renderText({
 
-      } else  if (question_set == 2) {
+      texto_pregunta <- dplyr::case_when(
 
-         plotly_questions2(
-            q1 = var_id[1],
-            q2 = var_id[2]
-         )
+         input$pregunta == "Cantidad ideal de hijes" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían? (Para quienes no tuvieron hijos)",
+         input$pregunta == "Edad ideal para tener el primer hije" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería? (Para quienes no tuvieron hijos)"
 
-      }
+      )
+
+      base::paste("Pregunta:", texto_pregunta)
+
+   })
+
+   ## Plot inferior
+   output$plot_inf <- plotly::renderPlotly({
+
+      plotly_questions_one(
+         q = var_name(),
+         th = "No"
+      )
 
    })
 
