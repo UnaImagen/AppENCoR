@@ -4,6 +4,7 @@
 
 # library(survey)
 library(magrittr)
+library(tidyverse)
 
 # Carga datos -------------------------------------------------------------
 encor <- haven::read_sav(
@@ -57,6 +58,126 @@ encor %<>%
       edad_ideal_primer_hijo = forcats::fct_explicit_na(
          f = edad_ideal_primer_hijo,
          na_level = "Ns/Nc"
+      ),
+
+      ## Edad límit inferior para tener sexo (mujeres)
+      edad_limit_inf_sexo_mujeres = dplyr::if_else(ina44 == 2, base::max(encor$ina44_1, na.rm = TRUE) + 1, ina44_1),
+      edad_limit_inf_sexo_mujeres = base::factor(
+         x = edad_limit_inf_sexo_mujeres,
+         levels = base::sort(base::unique(edad_limit_inf_sexo_mujeres))
+      ),
+      edad_limit_inf_sexo_mujeres = forcats::fct_explicit_na(
+         f = edad_limit_inf_sexo_mujeres,
+         na_level = "Ns/Nc"
+      ),
+      edad_limit_inf_sexo_mujeres = forcats::fct_recode(
+         .f = edad_limit_inf_sexo_mujeres,
+         Depende = base::as.character(base::max(encor$ina44_1, na.rm = TRUE) + 1)
+      ),
+
+      ## Edad límit inferior para tener sexo (varones)
+      edad_limit_inf_sexo_varones = dplyr::if_else(ina48 == 2, base::max(encor$ina48_1, na.rm = TRUE) + 1, ina48_1),
+      edad_limit_inf_sexo_varones = base::factor(
+         x = edad_limit_inf_sexo_varones,
+         levels = base::sort(base::unique(edad_limit_inf_sexo_varones))
+      ),
+      edad_limit_inf_sexo_varones = forcats::fct_explicit_na(
+         f = edad_limit_inf_sexo_varones,
+         na_level = "Ns/Nc"
+      ),
+      edad_limit_inf_sexo_varones = forcats::fct_recode(
+         .f = edad_limit_inf_sexo_varones,
+         Depende = base::as.character(base::max(encor$ina48_1, na.rm = TRUE) + 1)
+      ),
+
+      ## Edad límit inferior para tener hijos (mujeres)
+      edad_limit_inf_hijos_mujeres = dplyr::if_else(ina45 == 2, base::max(encor$ina45_1, na.rm = TRUE) + 1, ina45_1),
+      edad_limit_inf_hijos_mujeres = base::factor(
+         x = edad_limit_inf_hijos_mujeres,
+         levels = base::sort(base::unique(edad_limit_inf_hijos_mujeres))
+      ),
+      edad_limit_inf_hijos_mujeres = forcats::fct_explicit_na(
+         f = edad_limit_inf_hijos_mujeres,
+         na_level = "Ns/Nc"
+      ),
+      edad_limit_inf_hijos_mujeres = forcats::fct_recode(
+         .f = edad_limit_inf_hijos_mujeres,
+         Depende = base::as.character(base::max(encor$ina45_1, na.rm = TRUE) + 1)
+      ),
+
+      ## Edad límit superior para tener hijos (mujeres)
+      edad_limit_sup_hijos_mujeres = dplyr::if_else(ina46 == 2, base::max(encor$ina46_1, na.rm = TRUE) + 1, ina46_1),
+      edad_limit_sup_hijos_mujeres = base::factor(
+         x = edad_limit_sup_hijos_mujeres,
+         levels = base::sort(base::unique(edad_limit_sup_hijos_mujeres))
+      ),
+      edad_limit_sup_hijos_mujeres = forcats::fct_explicit_na(
+         f = edad_limit_sup_hijos_mujeres,
+         na_level = "Ns/Nc"
+      ),
+      edad_limit_sup_hijos_mujeres = forcats::fct_recode(
+         .f = edad_limit_sup_hijos_mujeres,
+         Depende = base::as.character(base::max(encor$ina46_1, na.rm = TRUE) + 1)
+      ),
+
+      ## Edad límit inferior para tener hijos (varones)
+      edad_limit_inf_hijos_varones = dplyr::if_else(ina49 == 2, base::max(encor$ina49_1, na.rm = TRUE) + 1, ina49_1),
+      edad_limit_inf_hijos_varones = base::factor(
+         x = edad_limit_inf_hijos_varones,
+         levels = base::sort(base::unique(edad_limit_inf_hijos_varones))
+      ),
+      edad_limit_inf_hijos_varones = forcats::fct_explicit_na(
+         f = edad_limit_inf_hijos_varones,
+         na_level = "Ns/Nc"
+      ),
+      edad_limit_inf_hijos_varones = forcats::fct_recode(
+         .f = edad_limit_inf_hijos_varones,
+         Depende = base::as.character(base::max(encor$ina49_1, na.rm = TRUE) + 1)
+      ),
+
+      ## Edad límit superior para tener hijos (varones)
+      edad_limit_sup_hijos_varones = dplyr::if_else(ina50 == 2, base::max(encor$ina50_1, na.rm = TRUE) + 1, ina50_1),
+      edad_limit_sup_hijos_varones = base::factor(
+         x = edad_limit_sup_hijos_varones,
+         levels = base::sort(base::unique(edad_limit_sup_hijos_varones))
+      ),
+      edad_limit_sup_hijos_varones = forcats::fct_explicit_na(
+         f = edad_limit_sup_hijos_varones,
+         na_level = "Ns/Nc"
+      ),
+      edad_limit_sup_hijos_varones = forcats::fct_recode(
+         .f = edad_limit_sup_hijos_varones,
+         Depende = base::as.character(base::max(encor$ina50_1, na.rm = TRUE) + 1)
+      ),
+
+      ## Edad límit inferior para abandonar estudios (mujeres)
+      edad_limit_inf_abandonar_estudios_mujeres = dplyr::if_else(ina47 == 2, base::max(encor$ina47_1, na.rm = TRUE) + 1, ina47_1),
+      edad_limit_inf_abandonar_estudios_mujeres = base::factor(
+         x = edad_limit_inf_abandonar_estudios_mujeres,
+         levels = base::sort(base::unique(edad_limit_inf_abandonar_estudios_mujeres))
+      ),
+      edad_limit_inf_abandonar_estudios_mujeres = forcats::fct_explicit_na(
+         f = edad_limit_inf_abandonar_estudios_mujeres,
+         na_level = "Ns/Nc"
+      ),
+      edad_limit_inf_abandonar_estudios_mujeres = forcats::fct_recode(
+         .f = edad_limit_inf_abandonar_estudios_mujeres,
+         Depende = base::as.character(base::max(encor$ina47_1, na.rm = TRUE) + 1)
+      ),
+
+      ## Edad límit inferior para abandonar estudios (varones)
+      edad_limit_inf_abandonar_estudios_varones = dplyr::if_else(ina50 == 2, base::max(encor$ina50_1, na.rm = TRUE) + 1, ina50_1),
+      edad_limit_inf_abandonar_estudios_varones = base::factor(
+         x = edad_limit_inf_abandonar_estudios_varones,
+         levels = base::sort(base::unique(edad_limit_inf_abandonar_estudios_varones))
+      ),
+      edad_limit_inf_abandonar_estudios_varones = forcats::fct_explicit_na(
+         f = edad_limit_inf_abandonar_estudios_varones,
+         na_level = "Ns/Nc"
+      ),
+      edad_limit_inf_abandonar_estudios_varones = forcats::fct_recode(
+         .f = edad_limit_inf_abandonar_estudios_varones,
+         Depende = base::as.character(base::max(encor$ina50_1, na.rm = TRUE) + 1)
       )
    ) %>%
    dplyr::select(
@@ -64,13 +185,67 @@ encor %<>%
       edad_act,
       tuvo_hijos,
       cantidad_ideal_hijos,
-      edad_ideal_primer_hijo
+      edad_ideal_primer_hijo,
+      edad_limit_inf_sexo_mujeres,
+      edad_limit_inf_sexo_varones,
+      edad_limit_inf_hijos_mujeres,
+      edad_limit_inf_hijos_varones,
+      edad_limit_sup_hijos_mujeres,
+      edad_limit_sup_hijos_varones,
+      edad_limit_inf_abandonar_estudios_mujeres,
+      edad_limit_inf_abandonar_estudios_varones
    )
 
 readr::write_rds(x = encor, path = here::here("encore.rds"))
 
-## agregar inas adicionales
+plotly_questions_two <- function(q, genero) {
 
+   encor %>%
+      dplyr::mutate(
+         variable := !!rlang::sym(q)
+      ) %>%
+      dplyr::group_by(
+         sexo,
+         variable
+      ) %>%
+      dplyr::summarise(
+         n = dplyr::n()
+      ) %>%
+      dplyr::mutate(
+         prop = n / base::sum(n)
+      ) %>%
+      plotly::plot_ly() %>%
+      plotly::add_trace(
+         x = ~variable,
+         y = ~prop,
+         color = ~sexo,
+         type = "bar"
+      ) %>%
+      plotly::layout(
+         xaxis = base::list(
+            title = "titulo"
+         ),
+         yaxis = base::list(
+            title = "<b>Porcentaje</b>",
+            tickformat = "%"
+         ),
+         legend = base::list(
+            title = base::list(
+               text = "<b>Sexo de quien<br>responde<b>"
+            ),
+            bgcolor = "#E2E2E2",
+            orientation = "h",
+            yanchor = "bottom",
+            xanchor = "left",
+            y = -.40
+         )
+      ) %>%
+      plotly::config(
+         locale = "es",
+         displayModeBar = TRUE
+      )
+
+}
 
 
 
