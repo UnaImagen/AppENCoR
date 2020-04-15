@@ -27,7 +27,7 @@ ui <- shiny::tagList(
 
             shiny::selectInput(
                inputId = "pregunta_ideales",
-               label = "Seleccione una pregunta",
+               label = "Seleccione una categoría",
                choices = base::c(
                   "Cantidad ideal de hijes",
                   "Edad ideal para tener el primer hije",
@@ -96,15 +96,15 @@ ui <- shiny::tagList(
 
             shiny::selectInput(
                inputId = "pregunta_motherhood",
-               label = "Seleccione una pregunta",
+               label = "Seleccione una categoría",
                choices = base::c(
                   "Madre antes de los 18",
-                  "No tener hijos",
+                  "No tener hijes",
                   "Vivir en pareja sin casarse",
-                  "Tener hijos con concubino",
-                  "Trabajar tiempo completo con hiijos",
-                  "Divorciarse con hijos",
-                  "Cuidado de los hijos",
+                  "Tener hijes con concubino",
+                  "Trabajar tiempo completo con hijes",
+                  "Divorciarse con hijes",
+                  "Cuidado de los hijes",
                   "Realización (mujeres)",
                   "Vida familiar",
                   "Realización (varones)"
@@ -427,14 +427,14 @@ server <- function(input, output) {
       dplyr::case_when(
 
          input$pregunta_motherhood == "Madre antes de los 18" ~ "madre_antes_18",
-         input$pregunta_motherhood == "No tener hijos" ~ "muujer_no_tener_hijos",
-         input$pregunta_motherhood == "Vivir en pareja sin casarse" ~ "mujere_vivir_en_pareja_sin_casarse",
-         input$pregunta_motherhood == "Tener hijos con concubino" ~ "mujer_tener_hijos_con_concu",
-         input$pregunta_motherhood == "Trabajar tiempo completo con hiijos" ~ "mujer_trabajar_full_con_hijos_menores_3",
-         input$pregunta_motherhood == "Divorciarse con hijos" ~ "mujer_divorciarse_con_hijos_menores_12",
-         input$pregunta_motherhood == "Cuidado de los hijos" ~ "cuidado_hijos_mujer_ppal",
+         input$pregunta_motherhood == "No tener hijes" ~ "mujer_no_tener_hijos",
+         input$pregunta_motherhood == "Vivir en pareja sin casarse" ~ "mujer_vivir_en_pareja_sin_casarse",
+         input$pregunta_motherhood == "Tener hijes con concubino" ~ "mujer_tener_hijos_con_concu",
+         input$pregunta_motherhood == "Trabajar tiempo completo con hijes" ~ "mujer_trabajar_full_con_hijos_menores_3",
+         input$pregunta_motherhood == "Divorciarse con hijes" ~ "mujer_divorciarse_con_hijos_menores_12",
+         input$pregunta_motherhood == "Cuidado de los hijes" ~ "cuidado_hijos_mujer_ppal",
          input$pregunta_motherhood == "Realización (mujeres)" ~ "mujer_se_realiza_cuando_es_madre",
-         input$pregunta_motherhood == "Vida familiar" ~ "mujerer_trabaja_full_perjudica_flia",
+         input$pregunta_motherhood == "Vida familiar" ~ "mujer_trabaja_full_perjudica_flia",
          input$pregunta_motherhood == "Realización (varones)" ~ "varon_se_realiza_cuando_es_padre"
 
       )
@@ -447,12 +447,12 @@ server <- function(input, output) {
       texto_pregunta <- dplyr::case_when(
 
          input$pregunta_motherhood == "Madre antes de los 18" ~ "Una mujer puede ser madre antes de los 18 años",
-         input$pregunta_motherhood == "No tener hijos" ~ "Una mujer puede decidir no tener hijos",
+         input$pregunta_motherhood == "No tener hijes" ~ "Una mujer puede decidir no tener hijos",
          input$pregunta_motherhood == "Vivir en pareja sin casarse" ~ "Una mujer puede vivir en pareja sin estar casada",
-         input$pregunta_motherhood == "Tener hijos con concubino" ~ "Una mujer puede tener hijos/as con la pareja que vive sin estar casada",
-         input$pregunta_motherhood == "Trabajar tiempo completo con hiijos" ~ "Una mujer puede tener un trabajo a tiempo completo teniendo hijos/as menores de 3 años",
-         input$pregunta_motherhood == "Divorciarse con hijos" ~ "Una mujer puede separarse o divorciarse teniendo hijos menores de 12 años",
-         input$pregunta_motherhood == "Cuidado de los hijos" ~ "El cuidado de los hijos debe ser tarea principalmente de la mujer",
+         input$pregunta_motherhood == "Tener hijes con concubino" ~ "Una mujer puede tener hijos/as con la pareja que vive sin estar casada",
+         input$pregunta_motherhood == "Trabajar tiempo completo con hijes" ~ "Una mujer puede tener un trabajo a tiempo completo teniendo hijos/as menores de 3 años",
+         input$pregunta_motherhood == "Divorciarse con hijes" ~ "Una mujer puede separarse o divorciarse teniendo hijos menores de 12 años",
+         input$pregunta_motherhood == "Cuidado de los hijes" ~ "El cuidado de los hijos debe ser tarea principalmente de la mujer",
          input$pregunta_motherhood == "Realización (mujeres)" ~ "Una mujer se realiza plenamente cuando es madre",
          input$pregunta_motherhood == "Vida familiar" ~ "Cuando la mujer tiene un trabajo de jornada completa la vida familiar se perjudica",
          input$pregunta_motherhood == "Realización (varones)" ~ "Un hombre se realiza plenamente cuando es padre"

@@ -184,10 +184,10 @@ encor %<>%
       madre_antes_18 = forcats::as_factor(ina52_1),
 
       ## Una mujer puede decidir no tener hijos
-      muujer_no_tener_hijos = forcats::as_factor(ina52_2),
+      mujer_no_tener_hijos = forcats::as_factor(ina52_2),
 
       ## Madre vivir en pareja sin estar casada
-      mujere_vivir_en_pareja_sin_casarse = forcats::as_factor(ina52_3),
+      mujer_vivir_en_pareja_sin_casarse = forcats::as_factor(ina52_3),
 
       ## Una mujer puede tener hijos/as con la pareja que vive sin estar casada
       mujer_tener_hijos_con_concu = forcats::as_factor(ina52_4),
@@ -205,7 +205,7 @@ encor %<>%
       mujer_se_realiza_cuando_es_madre = forcats::as_factor(ina52_8),
 
       ## Cuando la mujer tiene un trabajo de jornada completa la vida familiar se perjudica
-      mujerer_trabaja_full_perjudica_flia = forcats::as_factor(ina52_9),
+      mujer_trabaja_full_perjudica_flia = forcats::as_factor(ina52_9),
 
       ## Un hombre se realiza plenamente cuando es padre
       varon_se_realiza_cuando_es_padre = forcats::as_factor(ina52_10),
@@ -229,14 +229,14 @@ encor %<>%
       edad_limit_inf_abandonar_estudios_varones,
 
       madre_antes_18,
-      muujer_no_tener_hijos,
-      mujere_vivir_en_pareja_sin_casarse,
+      mujer_no_tener_hijos,
+      mujer_vivir_en_pareja_sin_casarse,
       mujer_tener_hijos_con_concu,
       mujer_trabajar_full_con_hijos_menores_3,
       mujer_divorciarse_con_hijos_menores_12,
       cuidado_hijos_mujer_ppal,
       mujer_se_realiza_cuando_es_madre,
-      mujerer_trabaja_full_perjudica_flia,
+      mujer_trabaja_full_perjudica_flia,
       varon_se_realiza_cuando_es_padre
 
    )
