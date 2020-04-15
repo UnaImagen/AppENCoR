@@ -178,12 +178,45 @@ encor %<>%
       edad_limit_inf_abandonar_estudios_varones = forcats::fct_recode(
          .f = edad_limit_inf_abandonar_estudios_varones,
          Depende = base::as.character(base::max(encor$ina50_1, na.rm = TRUE) + 1)
-      )
+      ),
+
+      ## Madre antes de los 18
+      madre_antes_18 = forcats::as_factor(ina52_1),
+
+      ## Una mujer puede decidir no tener hijos
+      muujer_no_tener_hijos = forcats::as_factor(ina52_2),
+
+      ## Madre vivir en pareja sin estar casada
+      mujere_vivir_en_pareja_sin_casarse = forcats::as_factor(ina52_3),
+
+      ## Una mujer puede tener hijos/as con la pareja que vive sin estar casada
+      mujer_tener_hijos_con_concu = forcats::as_factor(ina52_4),
+
+      ## Una mujer puede tener un trabajo completo teniendo hijos/as menores de 3 años
+      mujer_trabajar_full_con_hijos_menores_3 = forcats::as_factor(ina52_5),
+
+      ## Una mujer puede separarse o divorciarse teniendo hijos menores de 12 años
+      mujer_divorciarse_con_hijos_menores_12 = forcats::as_factor(ina52_6),
+
+      ## El cuidado de los hijos debe ser tarea principalmente de la mujer
+      cuidado_hijos_mujer_ppal = forcats::as_factor(ina52_7),
+
+      ## Una mujer se realiza plenamente cuando es madre
+      mujer_se_realiza_cuando_es_madre = forcats::as_factor(ina52_8),
+
+      ## Cuando la mujer tiene un trabajo de jornada completa la vida familiar se perjudica
+      mujerer_trabaja_full_perjudica_flia = forcats::as_factor(ina52_9),
+
+      ## Un hombre se realiza plenamente cuando es padre
+      varon_se_realiza_cuando_es_padre = forcats::as_factor(ina52_10),
+
+
    ) %>%
    dplyr::select(
       sexo,
       edad_act,
       tuvo_hijos,
+
       cantidad_ideal_hijos,
       edad_ideal_primer_hijo,
       edad_limit_inf_sexo_mujeres,
@@ -193,61 +226,22 @@ encor %<>%
       edad_limit_sup_hijos_mujeres,
       edad_limit_sup_hijos_varones,
       edad_limit_inf_abandonar_estudios_mujeres,
-      edad_limit_inf_abandonar_estudios_varones
+      edad_limit_inf_abandonar_estudios_varones,
+
+      madre_antes_18,
+      muujer_no_tener_hijos,
+      mujere_vivir_en_pareja_sin_casarse,
+      mujer_tener_hijos_con_concu,
+      mujer_trabajar_full_con_hijos_menores_3,
+      mujer_divorciarse_con_hijos_menores_12,
+      cuidado_hijos_mujer_ppal,
+      mujer_se_realiza_cuando_es_madre,
+      mujerer_trabaja_full_perjudica_flia,
+      varon_se_realiza_cuando_es_padre
+
    )
 
 readr::write_rds(x = encor, path = here::here("encore.rds"))
-
-plotly_questions_two <- function(q, genero) {
-
-   encor %>%
-      dplyr::mutate(
-         variable := !!rlang::sym(q)
-      ) %>%
-      dplyr::group_by(
-         sexo,
-         variable
-      ) %>%
-      dplyr::summarise(
-         n = dplyr::n()
-      ) %>%
-      dplyr::mutate(
-         prop = n / base::sum(n)
-      ) %>%
-      plotly::plot_ly() %>%
-      plotly::add_trace(
-         x = ~variable,
-         y = ~prop,
-         color = ~sexo,
-         type = "bar"
-      ) %>%
-      plotly::layout(
-         xaxis = base::list(
-            title = "titulo"
-         ),
-         yaxis = base::list(
-            title = "<b>Porcentaje</b>",
-            tickformat = "%"
-         ),
-         legend = base::list(
-            title = base::list(
-               text = "<b>Sexo de quien<br>responde<b>"
-            ),
-            bgcolor = "#E2E2E2",
-            orientation = "h",
-            yanchor = "bottom",
-            xanchor = "left",
-            y = -.40
-         )
-      ) %>%
-      plotly::config(
-         locale = "es",
-         displayModeBar = TRUE
-      )
-
-}
-
-
 
 # para comparar -----------------------------------------------------------
 
