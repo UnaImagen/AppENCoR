@@ -23,7 +23,7 @@ ui <- shiny::tagList(
 
          shiny::sidebarPanel(
 
-            shiny::h4("Encuesta Nacional de Comportamientos Reporductivos"),
+            shiny::h4("Encuesta Nacional de Comportamientos Reproductivos"),
 
             shiny::selectInput(
                inputId = "pregunta_ideales",
@@ -92,7 +92,7 @@ ui <- shiny::tagList(
 
          shiny::sidebarPanel(
 
-            shiny::h4("Encuesta Nacional de Comportamientos Reporductivos"),
+            shiny::h4("Encuesta Nacional de Comportamientos Reproductivos"),
 
             shiny::selectInput(
                inputId = "pregunta_motherhood",
