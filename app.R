@@ -145,9 +145,37 @@ ui <- shiny::tagList(
 
          title = "Métodos anticonceptivos",
 
+         shiny::sidebarPanel(
+
+            shiny::h4("Encuesta Nacional de Comportamientos Reproductivos"),
+
+            shiny::selectInput(
+
+               inputId = "select_ma_sexo",
+               label = "Sexo: ",
+               choices = base::c("Mujer", "Hombre"),
+               selected = base::c("Mujer", "Hombre"),
+               multiple = TRUE
+
+            ),
+
+            shiny::selectInput(
+
+               inputId = "select_ma_rango_edad",
+               label = "Rango de edad: ",
+               choices = base::levels(metodos_anticonceptivos$rango_edad),
+               selected = base::levels(metodos_anticonceptivos$rango_edad),
+               multiple = TRUE
+
+            ),
+
+            shiny::p("Fuente: Instituto Nacional de Estadística")
+
+         ),
+
          shiny::mainPanel(
 
-            width = 20,
+            # width = 20,
 
             shiny::div(
 
@@ -543,10 +571,14 @@ server <- function(input, output) {
 
 
    # Tab métodos anticonceptivos ---------------------------------------------
-
    output$sankey_metodos_anticonceptivos <- networkD3::renderSankeyNetwork({
 
-      generar_sankey(metodos_anticonceptivos)
+      metodos_anticonceptivos %>%
+         dplyr::filter(
+            sexo %in% input$select_ma_sexo,
+            rango_edad %in% input$select_ma_rango_edad
+         ) %>%
+         generar_sankey()
 
    })
 
