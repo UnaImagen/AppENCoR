@@ -3,7 +3,10 @@
 #=================#
 
 library(shiny)
+library(magrittr, quietly = TRUE)
 
+encor <- readr::read_rds(path = "encore.rds")
+metodos_anticonceptivos <- readr::read_rds(path = "metodos_anticonceptivos.rds")
 
 # UI ----------------------------------------------------------------------
 ui <- shiny::tagList(
@@ -201,14 +204,6 @@ ui <- shiny::tagList(
 
 # Server ------------------------------------------------------------------
 server <- function(input, output) {
-
-   # Setup -------------------------------------------------------------------
-
-   library(magrittr, quietly = TRUE)
-
-   encor <- readr::read_rds(path = "encore.rds")
-   metodos_anticonceptivos <- readr::read_rds(path = "metodos_anticonceptivos.rds")
-
 
    # Funciones ---------------------------------------------------------------
 
