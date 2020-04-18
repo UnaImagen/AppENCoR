@@ -277,9 +277,9 @@ metodos_anticonceptivos <- haven::read_sav(
       tuvo_primera_relacion = forcats::as_factor(tuvo_primera_relacion),
 
       # Edad primera relación
-      edad_primera_relacion = as.integer(ma24_1)
+      edad_primera_relacion = base::as.integer(ma24_1)
 
-) %>%
+   ) %>%
    dplyr::select(
       numero,
       nper,
@@ -310,6 +310,9 @@ primera_relacion <- metodos_anticonceptivos %>%
    ) %>%
    dplyr::mutate_all(
       .funs = ~forcats::as_factor(stringr::str_to_sentence(forcats::as_factor(.)))
+   ) %>%
+   dplyr::mutate(
+      edad_primera_relacion = base::as.integer(base::as.character(edad_primera_relacion))
    ) %>%
    tidyr::pivot_longer(
       cols = tidyselect::starts_with("ma25_"),
