@@ -16,7 +16,8 @@ ui <- shiny::tagList(
 
       title = "ENCoR",
 
-      ## Tab de ideales
+
+      # Tab ideales -------------------------------------------------------------
       shiny::tabPanel(
 
          title = "Ideales",
@@ -85,7 +86,8 @@ ui <- shiny::tagList(
 
       ),
 
-      ## Tab de motherhood
+
+      # Tab motherhood ----------------------------------------------------------
       shiny::tabPanel(
 
          title = "Maternidad",
@@ -138,6 +140,59 @@ ui <- shiny::tagList(
 
          )
 
+      ),
+
+      # Tab métodos anticonceptivos ---------------------------------------------
+      shiny::tabPanel(
+
+         title = "Métodos anticonceptivos",
+
+         # shiny::sidebarPanel(
+         #
+         #    shiny::h4("Encuesta Nacional de Comportamientos Reproductivos"),
+         #
+         #    shiny::selectInput(
+         #       inputId = "pregunta_motherhood",
+         #       label = "Seleccione una categoría",
+         #       choices = base::c(
+         #          "Madre antes de los 18",
+         #          "No tener hijes",
+         #          "Vivir en pareja sin casarse",
+         #          "Tener hijes con concubino",
+         #          "Trabajar tiempo completo con hijes",
+         #          "Divorciarse con hijes",
+         #          "Cuidado de los hijes",
+         #          "Realización (mujeres)",
+         #          "Vida familiar",
+         #          "Realización (varones)"
+         #       ),
+         #       selected = "Madre antes de los 18"
+         #    ),
+         #
+         #    shiny::p("Fuente: Instituto Nacional de Estadística")
+         #
+         # ),
+
+         shiny::mainPanel(
+
+            width = 20,
+
+            shiny::div(
+
+               class = 'questionDiv',
+
+               shiny::p("Métodos anticonceptivos utilizados por los encuestados, para aquellos que ya tuvieron su primer relación sexual.
+                        En la columna izquierda, los métodos utilizados durante la primer relación. En la columna de la derecha, los métodos
+                        utilizados durante los últimos 6 meses.")
+
+            ),
+
+            networkD3::sankeyNetworkOutput(
+               outputId = "sankey_metodos_anticonceptivos"
+            )
+
+         )
+
       )
 
    )
@@ -152,6 +207,7 @@ server <- function(input, output) {
    library(magrittr, quietly = TRUE)
 
    encor <- readr::read_rds(path = "encore.rds")
+   metodos_anticonceptivos <- readr::read_rds(path = "metodos_anticonceptivos.rds")
 
 
    # Funciones ---------------------------------------------------------------
@@ -326,6 +382,48 @@ server <- function(input, output) {
 
    }
 
+   generar_sankey <- function(.data) {
+
+      aux_data <- .data %>%
+         dplyr::group_by(
+            metodo_primera_relacion,
+            metodo_ultimos_seis_meses
+         ) %>%
+         dplyr::summarise(
+            n = dplyr::n()
+         ) %>%
+         dplyr::ungroup() %>%
+         dplyr::filter(
+            stats::complete.cases(.)
+         ) %>%
+         dplyr::transmute(
+            source = metodo_primera_relacion,
+            target = stringr::str_c(metodo_ultimos_seis_meses, " "),
+            value = n
+         )
+
+      nodes <- base::data.frame(name = base::c(base::as.character(aux_data$source), base::as.character(aux_data$target)) %>% base::unique())
+
+      # Agrega IDs con 0 indexing (porque JS usa 0 indexing)
+      aux_data$IDsource <- base::match(aux_data$source, nodes$name) - 1
+      aux_data$IDtarget <- base::match(aux_data$target, nodes$name) - 1
+
+      # Construye el Sankey
+      networkD3::sankeyNetwork(
+         Links = base::as.data.frame(aux_data),
+         Nodes = nodes,
+         Source = "IDsource",
+         Target = "IDtarget",
+         Value = "value",
+         NodeID = "name",
+         sinksRight = FALSE,
+         nodeWidth = 40,
+         fontSize = 13,
+         nodePadding = 20
+      )
+
+   }
+
 
    # Tab ideales -------------------------------------------------------------
    var_name <- shiny::reactive({
@@ -421,7 +519,6 @@ server <- function(input, output) {
 
 
    # Tab maternidad ----------------------------------------------------------
-
    var_name_motherhood <- shiny::reactive({
 
       dplyr::case_when(
@@ -469,6 +566,15 @@ server <- function(input, output) {
       plotly_question_motherhood(
          q = var_name_motherhood()
       )
+
+   })
+
+
+   # Tab métodos anticonceptivos ---------------------------------------------
+
+   output$sankey_metodos_anticonceptivos <- networkD3::renderSankeyNetwork({
+
+      generar_sankey(metodos_anticonceptivos)
 
    })
 
