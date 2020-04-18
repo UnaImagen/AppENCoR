@@ -11,7 +11,6 @@ encor <- haven::read_sav(
    file = here::here("Base ENCoR terceros.sav")
 )
 
-
 # Genera rds para App -----------------------------------------------------
 encor %<>%
    dplyr::mutate(
@@ -239,9 +238,134 @@ encor %<>%
       mujer_trabaja_full_perjudica_flia,
       varon_se_realiza_cuando_es_padre
 
-   )
+   ) %>%
+   dplyr::distinct()
 
 readr::write_rds(x = encor, path = here::here("encore.rds"))
+
+
+x <- encor %>%
+   dplyr::mutate(
+      # Sexodu
+      sexo = forcats::as_factor(sexo),
+
+      # Tuvo hijos
+      tuvo_hijos = stringr::str_to_sentence(forcats::as_factor(hr10)),
+      tuvo_hijos = forcats::as_factor(tuvo_hijos),
+
+      # Edad actual
+      edad_actual = base::as.integer(edad_act),
+
+      # Virgen?
+      tuvo_primera_relacion = stringr::str_to_sentence(forcats::as_factor(ma0)),
+      tuvo_primera_relacion = forcats::as_factor(tuvo_primera_relacion),
+
+      # Edad primera relación
+      edad_primera_relacion = forcats::as_factor(ma24_1),
+      edad_primera_relacion = forcats::fct_explicit_na(
+         f = edad_primera_relacion,
+         na_level = "Ns/Nc"
+      )
+
+   ) %>%
+   dplyr::select(
+      numero,
+      nper,
+      sexo,
+      tuvo_hijos,
+      edad_actual,
+      tuvo_primera_relacion,
+      edad_primera_relacion,
+      tidyselect::starts_with("ma25_"),
+      tidyselect::starts_with("ma26_"),
+      tidyselect::starts_with("ma27_"),
+   ) %>%
+   dplyr::distinct()
+
+
+
+x %>%
+   dplyr::filter(
+      numero == "2015016751"
+   )
+# dplyr::filter(
+#    tuvo_primera_relacion == "Sí"
+# ) %>%
+dplyr::mutate_all(
+   .funs = ~forcats::as_factor(stringr::str_to_sentence(forcats::as_factor(.)))
+) %>%
+   tidyr::pivot_longer(
+      cols = tidyselect::starts_with("ma25_"),
+      names_to = "metodo_primera_relacion",
+      values_to = "value_primera_relacion"
+   ) %>%
+   tidyr::pivot_longer(
+      cols = tidyselect::starts_with("ma26_"),
+      names_to = "metodo_ultimos_seis_meses",
+      values_to = "value_ultimos_seis_meses"
+   ) %>%
+   tidyr::pivot_longer(
+      cols = tidyselect::starts_with("ma27_"),
+      names_to = "metodo_ultima_relacion",
+      values_to = "value_ultima_relacion"
+   ) %>%
+   dplyr::filter(
+      value_primera_relacion == "Sí" | value_ultimos_seis_meses == "Sí" | value_ultima_relacion == "Sí"
+   )
+dplyr::mutate(
+   metodo_primera_relacion = dplyr::case_when(
+      metodo_primera_relacion == "ma25_1" ~ "Píldora o pastillas anticonceptivas",
+      metodo_primera_relacion == "ma25_2" ~ "Condón o preservativo femenino",
+      metodo_primera_relacion == "ma25_3" ~ "DIU",
+      metodo_primera_relacion == "ma25_4" ~ "Método del ritmo, calendario o de control de la temperatura",
+      metodo_primera_relacion == "ma25_5" ~ "Retiro o interrupción del acto sexual",
+      metodo_primera_relacion == "ma25_6" ~ "Inyección anticonceptiva",
+      metodo_primera_relacion == "ma25_7" ~ "Implantes",
+      metodo_primera_relacion == "ma25_8" ~ "Esterilización femenina (Ligadura de trompas)",
+      metodo_primera_relacion == "ma25_9" ~ "Esterilización masculina (vasectomía)",
+      metodo_primera_relacion == "ma25_10" ~ "Anticoncepción de emergencia (pastilla del día después)",
+      metodo_primera_relacion == "ma25_11" ~ "Método de lactancia materna",
+      metodo_primera_relacion == "ma25_12" ~ "No utilizó",
+      metodo_primera_relacion == "ma25_13" ~ "No tuvo relaciones sexuales",
+      metodo_primera_relacion == "ma25_14" ~ "Condón o preservativo masculino",
+      metodo_primera_relacion == "ma25_15" ~ "Ns/Nc",
+      metodo_primera_relacion == "ma25_16" ~ "Otro"
+   )
+) %>%
+   dplyr::group_by(
+      metodo_primera_relacion
+   ) %>%
+   dplyr::summarise(
+      n = dplyr::n()
+   )
+
+
+purrr::map(
+   .f = ~table(.),
+   useNA = "always"
+)
+
+plotly::plot_ly(
+   type = "sankey",
+   orientation = "h",
+
+   node = list(
+      label = c("A1", "A2", "B1", "B2", "C1", "C2"),
+      pad = 15,
+      thickness = 20,
+      line = list(
+         color = "black",
+         width = 0.5
+      )
+   ),
+
+   link = list(
+      source = c(0, 1, 0, 2, 3, 3),
+      target = c(2, 3, 3, 4, 4, 5),
+      value =  c(8, 4, 2, 8, 4, 2)
+   )
+)
+
 
 # para comparar -----------------------------------------------------------
 
