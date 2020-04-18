@@ -16,7 +16,6 @@ ui <- shiny::tagList(
 
       title = "ENCoR",
 
-
       # Tab ideales -------------------------------------------------------------
       shiny::tabPanel(
 
@@ -86,7 +85,6 @@ ui <- shiny::tagList(
 
       ),
 
-
       # Tab motherhood ----------------------------------------------------------
       shiny::tabPanel(
 
@@ -146,32 +144,6 @@ ui <- shiny::tagList(
       shiny::tabPanel(
 
          title = "Métodos anticonceptivos",
-
-         # shiny::sidebarPanel(
-         #
-         #    shiny::h4("Encuesta Nacional de Comportamientos Reproductivos"),
-         #
-         #    shiny::selectInput(
-         #       inputId = "pregunta_motherhood",
-         #       label = "Seleccione una categoría",
-         #       choices = base::c(
-         #          "Madre antes de los 18",
-         #          "No tener hijes",
-         #          "Vivir en pareja sin casarse",
-         #          "Tener hijes con concubino",
-         #          "Trabajar tiempo completo con hijes",
-         #          "Divorciarse con hijes",
-         #          "Cuidado de los hijes",
-         #          "Realización (mujeres)",
-         #          "Vida familiar",
-         #          "Realización (varones)"
-         #       ),
-         #       selected = "Madre antes de los 18"
-         #    ),
-         #
-         #    shiny::p("Fuente: Instituto Nacional de Estadística")
-         #
-         # ),
 
          shiny::mainPanel(
 
