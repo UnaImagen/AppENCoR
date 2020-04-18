@@ -172,13 +172,25 @@ ui <- shiny::tagList(
 
             ),
 
+            shiny::sliderInput(
+
+               inputId = "select_ma_rango_edad_primera_relacion",
+               label = "Edad a la que tuvo la primer relación: ",
+               min = base::min(metodos_anticonceptivos$edad_primera_relacion, na.rm = TRUE),
+               max = base::max(metodos_anticonceptivos$edad_primera_relacion, na.rm = TRUE),
+               value = base::c(
+                  base::min(metodos_anticonceptivos$edad_primera_relacion, na.rm = TRUE),
+                  base::max(metodos_anticonceptivos$edad_primera_relacion, na.rm = TRUE)),
+               step = 1,
+               animate = TRUE
+
+            ),
+
             shiny::p("Fuente: Instituto Nacional de Estadística")
 
          ),
 
          shiny::mainPanel(
-
-            # width = 20,
 
             shiny::div(
 
@@ -411,6 +423,7 @@ server <- function(input, output) {
          Target = "IDtarget",
          Value = "value",
          NodeID = "name",
+         width = 100,
          sinksRight = FALSE,
          nodeWidth = 40,
          fontSize = 13,
@@ -571,7 +584,8 @@ server <- function(input, output) {
       metodos_anticonceptivos %>%
          dplyr::filter(
             sexo %in% input$select_ma_sexo,
-            rango_edad %in% input$select_ma_rango_edad
+            rango_edad %in% input$select_ma_rango_edad,
+            dplyr::between(edad_primera_relacion, input$select_ma_rango_edad_primera_relacion[1], input$select_ma_rango_edad_primera_relacion[2])
          ) %>%
          generar_sankey()
 
