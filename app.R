@@ -155,7 +155,7 @@ ui <- shiny::tagList(
             shiny::selectInput(
 
                inputId = "select_ma_sexo",
-               label = "Sexo: ",
+               label = "Sexo del encuestado/a: ",
                choices = base::c("Mujer", "Hombre"),
                selected = base::c("Mujer", "Hombre"),
                multiple = TRUE
@@ -165,7 +165,7 @@ ui <- shiny::tagList(
             shiny::selectInput(
 
                inputId = "select_ma_rango_edad",
-               label = "Rango de edad: ",
+               label = "Edad del encuestado/a: ",
                choices = base::levels(metodos_anticonceptivos$rango_edad),
                selected = base::levels(metodos_anticonceptivos$rango_edad),
                multiple = TRUE
