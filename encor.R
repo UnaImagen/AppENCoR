@@ -257,25 +257,35 @@ metodos_anticonceptivos <- haven::read_sav(
 
       # Edad actual
       edad_actual = base::as.integer(edad_act),
+      rango_edad = dplyr::case_when(
+         dplyr::between(edad_actual, 15, 20) ~ "[15-20]",
+         dplyr::between(edad_actual, 21, 30) ~ "[21-30]",
+         dplyr::between(edad_actual, 31, 40) ~ "[31-40]",
+         dplyr::between(edad_actual, 41, 50) ~ "[41-50]"
+      ),
+      rango_edad = forcats::as_factor(rango_edad),
+      rango_edad = forcats::fct_relevel(
+         .f = rango_edad,
+         "[15-20]",
+         "[21-30]",
+         "[31-40]",
+         "[41-50]"
+      ),
 
       # Virgen?
       tuvo_primera_relacion = stringr::str_to_sentence(forcats::as_factor(ma0)),
       tuvo_primera_relacion = forcats::as_factor(tuvo_primera_relacion),
 
       # Edad primera relación
-      edad_primera_relacion = forcats::as_factor(ma24_1),
-      edad_primera_relacion = forcats::fct_explicit_na(
-         f = edad_primera_relacion,
-         na_level = "Ns/Nc"
-      )
+      edad_primera_relacion = as.integer(ma24_1)
 
-   ) %>%
+) %>%
    dplyr::select(
       numero,
       nper,
       sexo,
       tuvo_hijos,
-      edad_actual,
+      rango_edad,
       tuvo_primera_relacion,
       edad_primera_relacion,
       tidyselect::starts_with("ma25_"),
@@ -290,7 +300,7 @@ primera_relacion <- metodos_anticonceptivos %>%
       nper,
       sexo,
       tuvo_hijos,
-      edad_actual,
+      rango_edad,
       tuvo_primera_relacion,
       edad_primera_relacion,
       tidyselect::starts_with("ma25_")
