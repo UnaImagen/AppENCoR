@@ -4,7 +4,6 @@
 
 # library(survey)
 library(magrittr)
-library(tidyverse)
 
 # Carga datos -------------------------------------------------------------
 encor <- haven::read_sav(
@@ -244,7 +243,10 @@ encor %<>%
 readr::write_rds(x = encor, path = here::here("encore.rds"))
 
 
-x <- encor %>%
+# Métodos anticonceptivos -------------------------------------------------
+metodos_anticonceptivos <- haven::read_sav(
+   file = here::here("Base ENCoR terceros.sav")
+) %>%
    dplyr::mutate(
       # Sexodu
       sexo = forcats::as_factor(sexo),
@@ -282,27 +284,114 @@ x <- encor %>%
    ) %>%
    dplyr::distinct()
 
-
-
-x %>%
+primera_relacion <- metodos_anticonceptivos %>%
+   dplyr::select(
+      numero,
+      nper,
+      sexo,
+      tuvo_hijos,
+      edad_actual,
+      tuvo_primera_relacion,
+      edad_primera_relacion,
+      tidyselect::starts_with("ma25_")
+   ) %>%
    dplyr::filter(
-      numero == "2015016751"
-   )
-# dplyr::filter(
-#    tuvo_primera_relacion == "Sí"
-# ) %>%
-dplyr::mutate_all(
-   .funs = ~forcats::as_factor(stringr::str_to_sentence(forcats::as_factor(.)))
-) %>%
+      tuvo_primera_relacion == "Sí"
+   ) %>%
+   dplyr::mutate_all(
+      .funs = ~forcats::as_factor(stringr::str_to_sentence(forcats::as_factor(.)))
+   ) %>%
    tidyr::pivot_longer(
       cols = tidyselect::starts_with("ma25_"),
       names_to = "metodo_primera_relacion",
       values_to = "value_primera_relacion"
    ) %>%
+   dplyr::filter(
+      value_primera_relacion == "Sí"
+   ) %>%
+   dplyr::mutate(
+      metodo_primera_relacion = dplyr::case_when(
+         metodo_primera_relacion == "ma25_1" ~ "Pastillas anticonceptivas",
+         metodo_primera_relacion == "ma25_2" ~ "Condón femenino",
+         metodo_primera_relacion == "ma25_3" ~ "DIU",
+         metodo_primera_relacion == "ma25_4" ~ "Método del calendario",
+         metodo_primera_relacion == "ma25_5" ~ "Retiro",
+         metodo_primera_relacion == "ma25_6" ~ "Inyección anticonceptiva",
+         metodo_primera_relacion == "ma25_7" ~ "Implantes",
+         metodo_primera_relacion == "ma25_8" ~ "Ligadura de trompas",
+         metodo_primera_relacion == "ma25_9" ~ "Vasectomía",
+         metodo_primera_relacion == "ma25_10" ~ "Pastilla del día después",
+         metodo_primera_relacion == "ma25_11" ~ "Método de lactancia materna",
+         metodo_primera_relacion == "ma25_12" ~ "No utilizó",
+         metodo_primera_relacion == "ma25_13" ~ "No tuvo relaciones sexuales",
+         metodo_primera_relacion == "ma25_14" ~ "Condón masculino",
+         metodo_primera_relacion == "ma25_15" ~ "Ns/Nc",
+         metodo_primera_relacion == "ma25_16" ~ "Otro"
+      )
+   ) %>%
+   dplyr::select(
+      -value_primera_relacion,
+      -tuvo_primera_relacion
+   )
+
+ultimos_seis_meses <- metodos_anticonceptivos %>%
+   dplyr::select(
+      numero,
+      nper,
+      tuvo_primera_relacion,
+      tidyselect::starts_with("ma26_")
+   ) %>%
+   dplyr::filter(
+      tuvo_primera_relacion == "Sí"
+   ) %>%
+   dplyr::mutate_all(
+      .funs = ~forcats::as_factor(stringr::str_to_sentence(forcats::as_factor(.)))
+   ) %>%
    tidyr::pivot_longer(
       cols = tidyselect::starts_with("ma26_"),
       names_to = "metodo_ultimos_seis_meses",
       values_to = "value_ultimos_seis_meses"
+   ) %>%
+   dplyr::filter(
+      value_ultimos_seis_meses == "Sí"
+   ) %>%
+   dplyr::mutate(
+      metodo_ultimos_seis_meses = dplyr::case_when(
+         metodo_ultimos_seis_meses == "ma26_1" ~ "Pastillas anticonceptivas",
+         metodo_ultimos_seis_meses == "ma26_2" ~ "Condón femenino",
+         metodo_ultimos_seis_meses == "ma26_3" ~ "DIU",
+         metodo_ultimos_seis_meses == "ma26_4" ~ "Método del calendario",
+         metodo_ultimos_seis_meses == "ma26_5" ~ "Retiro",
+         metodo_ultimos_seis_meses == "ma26_6" ~ "Inyección anticonceptiva",
+         metodo_ultimos_seis_meses == "ma26_7" ~ "Implantes",
+         metodo_ultimos_seis_meses == "ma26_8" ~ "Ligadura de trompas",
+         metodo_ultimos_seis_meses == "ma26_9" ~ "Vasectomía",
+         metodo_ultimos_seis_meses == "ma26_10" ~ "Pastilla del día después",
+         metodo_ultimos_seis_meses == "ma26_11" ~ "Método de lactancia materna",
+         metodo_ultimos_seis_meses == "ma26_12" ~ "No utilizó",
+         metodo_ultimos_seis_meses == "ma26_13" ~ "No tuvo relaciones sexuales",
+         metodo_ultimos_seis_meses == "ma26_14" ~ "Condón masculino",
+         metodo_ultimos_seis_meses == "ma26_15" ~ "Ns/Nc",
+         metodo_ultimos_seis_meses == "ma26_16" ~ "Otro"
+      )
+   ) %>%
+   dplyr::select(
+      -value_ultimos_seis_meses,
+      -tuvo_primera_relacion
+   )
+
+ultima_relacion <- metodos_anticonceptivos %>%
+   dplyr::select(
+      numero,
+      nper,
+      tuvo_primera_relacion,
+      tidyselect::starts_with("ma27_")
+   ) %>%
+   dplyr::filter(
+      tuvo_primera_relacion == "Sí"
+   ) %>%
+   dplyr::mutate_all(
+      .funs = ~forcats::as_factor(stringr::str_to_sentence(forcats::as_factor(.)))
    ) %>%
    tidyr::pivot_longer(
       cols = tidyselect::starts_with("ma27_"),
@@ -310,61 +399,44 @@ dplyr::mutate_all(
       values_to = "value_ultima_relacion"
    ) %>%
    dplyr::filter(
-      value_primera_relacion == "Sí" | value_ultimos_seis_meses == "Sí" | value_ultima_relacion == "Sí"
-   )
-dplyr::mutate(
-   metodo_primera_relacion = dplyr::case_when(
-      metodo_primera_relacion == "ma25_1" ~ "Píldora o pastillas anticonceptivas",
-      metodo_primera_relacion == "ma25_2" ~ "Condón o preservativo femenino",
-      metodo_primera_relacion == "ma25_3" ~ "DIU",
-      metodo_primera_relacion == "ma25_4" ~ "Método del ritmo, calendario o de control de la temperatura",
-      metodo_primera_relacion == "ma25_5" ~ "Retiro o interrupción del acto sexual",
-      metodo_primera_relacion == "ma25_6" ~ "Inyección anticonceptiva",
-      metodo_primera_relacion == "ma25_7" ~ "Implantes",
-      metodo_primera_relacion == "ma25_8" ~ "Esterilización femenina (Ligadura de trompas)",
-      metodo_primera_relacion == "ma25_9" ~ "Esterilización masculina (vasectomía)",
-      metodo_primera_relacion == "ma25_10" ~ "Anticoncepción de emergencia (pastilla del día después)",
-      metodo_primera_relacion == "ma25_11" ~ "Método de lactancia materna",
-      metodo_primera_relacion == "ma25_12" ~ "No utilizó",
-      metodo_primera_relacion == "ma25_13" ~ "No tuvo relaciones sexuales",
-      metodo_primera_relacion == "ma25_14" ~ "Condón o preservativo masculino",
-      metodo_primera_relacion == "ma25_15" ~ "Ns/Nc",
-      metodo_primera_relacion == "ma25_16" ~ "Otro"
-   )
-) %>%
-   dplyr::group_by(
-      metodo_primera_relacion
+      value_ultima_relacion == "Sí"
    ) %>%
-   dplyr::summarise(
-      n = dplyr::n()
-   )
-
-
-purrr::map(
-   .f = ~table(.),
-   useNA = "always"
-)
-
-plotly::plot_ly(
-   type = "sankey",
-   orientation = "h",
-
-   node = list(
-      label = c("A1", "A2", "B1", "B2", "C1", "C2"),
-      pad = 15,
-      thickness = 20,
-      line = list(
-         color = "black",
-         width = 0.5
+   dplyr::mutate(
+      metodo_ultima_relacion = dplyr::case_when(
+         metodo_ultima_relacion == "ma27_1" ~ "Pastillas anticonceptivas",
+         metodo_ultima_relacion == "ma27_2" ~ "Condón femenino",
+         metodo_ultima_relacion == "ma27_3" ~ "DIU",
+         metodo_ultima_relacion == "ma27_4" ~ "Método del calendario",
+         metodo_ultima_relacion == "ma27_5" ~ "Retiro",
+         metodo_ultima_relacion == "ma27_6" ~ "Inyección anticonceptiva",
+         metodo_ultima_relacion == "ma27_7" ~ "Implantes",
+         metodo_ultima_relacion == "ma27_8" ~ "Ligadura de trompas",
+         metodo_ultima_relacion == "ma27_9" ~ "Vasectomía",
+         metodo_ultima_relacion == "ma27_10" ~ "Pastilla del día después",
+         metodo_ultima_relacion == "ma27_11" ~ "Método de lactancia materna",
+         metodo_ultima_relacion == "ma27_12" ~ "No utilizó",
+         metodo_ultima_relacion == "ma27_13" ~ "No tuvo relaciones sexuales",
+         metodo_ultima_relacion == "ma27_14" ~ "Condón masculino",
+         metodo_ultima_relacion == "ma27_15" ~ "Ns/Nc",
+         metodo_ultima_relacion == "ma27_16" ~ "Otro"
       )
-   ),
-
-   link = list(
-      source = c(0, 1, 0, 2, 3, 3),
-      target = c(2, 3, 3, 4, 4, 5),
-      value =  c(8, 4, 2, 8, 4, 2)
+   ) %>%
+   dplyr::select(
+      -value_ultima_relacion,
+      -tuvo_primera_relacion
    )
-)
+
+metodos_anticonceptivos <- primera_relacion %>%
+   dplyr::left_join(
+      ultimos_seis_meses,
+      by = base::c("numero", "nper")
+   ) %>%
+   dplyr::left_join(
+      ultima_relacion,
+      by = base::c("numero", "nper")
+   )
+
+readr::write_rds(x = metodos_anticonceptivos, path = "metodos_anticonceptivos.rds")
 
 
 # para comparar -----------------------------------------------------------
