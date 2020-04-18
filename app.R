@@ -153,6 +153,20 @@ ui <- shiny::tagList(
             shiny::h4("Encuesta Nacional de Comportamientos Reproductivos"),
 
             shiny::selectInput(
+               inputId = "select_ma_var_1",
+               label = "Comparar... ",
+               choices = base::c("Primer relación", "Últimos 6 meses"),
+               selected = "Primer relación"
+            ),
+
+            shiny::selectInput(
+               inputId = "select_ma_var_2",
+               label = "... con ",
+               choices = base::c("Últimos 6 meses", "Última relación"),
+               selected = "Últimos 6 meses"
+            ),
+
+            shiny::selectInput(
 
                inputId = "select_ma_sexo",
                label = "Sexo del encuestado/a: ",
@@ -196,9 +210,13 @@ ui <- shiny::tagList(
 
                class = 'questionDiv',
 
-               shiny::p("Métodos anticonceptivos utilizados por los encuestados, para aquellos que ya tuvieron su primer relación sexual.
-                        En la columna izquierda, los métodos utilizados durante la primer relación. En la columna de la derecha, los métodos
-                        utilizados durante los últimos 6 meses.")
+               shiny::p(
+
+                  shiny::textOutput(
+                     outputId = "texto_metodos_anticonceptivos"
+                  )
+
+               )
 
             ),
 
@@ -389,12 +407,26 @@ server <- function(input, output) {
 
    }
 
-   generar_sankey <- function(.data) {
+   generar_sankey <- function(.data, var_1, var_2) {
+
+      var_1 <- dplyr::case_when(
+
+         input$select_ma_var_1 == "Primer relación" ~ "metodo_primera_relacion",
+         input$select_ma_var_1 == "Últimos 6 meses" ~ "metodo_ultimos_seis_meses"
+
+      )
+
+      var_2 <- dplyr::case_when(
+
+         input$select_ma_var_2 == "Últimos 6 meses" ~ "metodo_ultimos_seis_meses",
+         input$select_ma_var_2 == "Última relación" ~ "metodo_ultima_relacion"
+
+      )
 
       aux_data <- .data %>%
          dplyr::group_by(
-            metodo_primera_relacion,
-            metodo_ultimos_seis_meses
+            var_1 := !!rlang::sym(var_1),
+            var_2 := !!rlang::sym(var_2)
          ) %>%
          dplyr::summarise(
             n = dplyr::n()
@@ -404,8 +436,8 @@ server <- function(input, output) {
             stats::complete.cases(.)
          ) %>%
          dplyr::transmute(
-            source = metodo_primera_relacion,
-            target = stringr::str_c(metodo_ultimos_seis_meses, " "),
+            source = var_1,
+            target = stringr::str_c(var_2, " "),
             value = n
          )
 
@@ -423,7 +455,7 @@ server <- function(input, output) {
          Target = "IDtarget",
          Value = "value",
          NodeID = "name",
-         width = 100,
+         # width = 100,
          sinksRight = FALSE,
          nodeWidth = 40,
          fontSize = 13,
@@ -579,6 +611,29 @@ server <- function(input, output) {
 
 
    # Tab métodos anticonceptivos ---------------------------------------------
+
+   ## Texto explicativo
+   output$texto_metodos_anticonceptivos <- shiny::renderText({
+
+      base::paste(
+         "Métodos anticonceptivos utilizados por los encuestados, para aquellos que ya tuvieron su primer relación sexual. En la columna izquierda,
+         los métodos utilizados durante",
+         dplyr::case_when(
+            input$select_ma_var_1 == "Primer relación" ~ "la",
+            input$select_ma_var_1 == "Últimos 6 meses" ~ "los"
+         ),
+         stringr::str_to_lower(input$select_ma_var_1),
+         ". En la columna de la derecha, los métodos utilizados durante",
+         dplyr::case_when(
+            input$select_ma_var_2 == "Últimos 6 meses" ~ "los",
+            input$select_ma_var_2 == "Última relación" ~ "la"
+         ),
+         stringr::str_to_lower(input$select_ma_var_2),
+         "."
+         )
+
+   })
+
    output$sankey_metodos_anticonceptivos <- networkD3::renderSankeyNetwork({
 
       metodos_anticonceptivos %>%
@@ -587,7 +642,10 @@ server <- function(input, output) {
             rango_edad %in% input$select_ma_rango_edad,
             dplyr::between(edad_primera_relacion, input$select_ma_rango_edad_primera_relacion[1], input$select_ma_rango_edad_primera_relacion[2])
          ) %>%
-         generar_sankey()
+         generar_sankey(
+            var_1 = input$select_ma_var_1,
+            var_2 = input$select_ma_var_2
+         )
 
    })
 
