@@ -455,10 +455,6 @@ metodos_anticonceptivos <- primera_relacion %>%
 
 readr::write_rds(x = metodos_anticonceptivos, path = "metodos_anticonceptivos.rds")
 
-
-## Agregar edad de la persona al momento de tener el primer hijo
-## hace scatter plots donde el tamaño sea la cantidad de personas que contestaron a esa pregutna en esas cantidades
-
 #===============#
 #### THE END ####
 #===============#
