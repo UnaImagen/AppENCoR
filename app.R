@@ -203,7 +203,6 @@ ui <- shiny::tagList(
 
       ),
 
-
       # Tab comparar respuestas ---------------------------------------------------
       shiny::tabPanel(
 
@@ -212,6 +211,9 @@ ui <- shiny::tagList(
          shiny::sidebarPanel(
 
             shiny::h4("Encuesta Nacional de Comportamientos Reproductivos"),
+
+            shiny::p("Compará las respuestas de una misma persona a dos preguntas distintas. El tamaño de los puntos indica la cantiad de personas
+                     que contestaron la misma combinación de respuestas."),
 
             shiny::selectInput(
                inputId = "select_qc_sexo",
@@ -236,7 +238,7 @@ ui <- shiny::tagList(
                   "Edad límite inferior para abandonar estudios (mujeres)",
                   "Edad límite inferior para abandonar estudios (hombres)"
                ),
-               selected = "cantidad_ideal_hijos"
+               selected = "Cantidad ideal de hijos"
             ),
 
             shiny::selectInput(
@@ -255,7 +257,7 @@ ui <- shiny::tagList(
                   "Edad límite inferior para abandonar estudios (mujeres)",
                   "Edad límite inferior para abandonar estudios (hombres)"
                ),
-               selected = "cantidad_hijos"
+               selected = "Cantidad de hijos"
             ),
 
             shiny::p("Fuente: Instituto Nacional de Estadística")
