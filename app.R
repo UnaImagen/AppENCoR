@@ -5,7 +5,7 @@
 library(shiny, quietly = TRUE)
 library(magrittr, quietly = TRUE)
 
-encor <- readr::read_rds(path = "encore.rds")
+encor <- readr::read_rds(path = "encor.rds")
 metodos_anticonceptivos <- readr::read_rds(path = "metodos_anticonceptivos.rds")
 
 # UI ----------------------------------------------------------------------

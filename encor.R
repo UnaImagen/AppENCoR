@@ -244,7 +244,7 @@ encor %<>%
    ) %>%
    dplyr::distinct()
 
-readr::write_rds(x = encor, path = here::here("encore.rds"))
+readr::write_rds(x = encor, path = here::here("encor.rds"))
 
 
 # Métodos anticonceptivos -------------------------------------------------
