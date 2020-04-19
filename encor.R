@@ -39,6 +39,9 @@ encor %<>%
          na_level = "Ns/Nc"
       ),
 
+      # Cantidad de hijos
+      cantidad_hijos = base::as.integer(hr10_1),
+
       # Edad ideal para tener el primer hijo
       ina41 = dplyr::if_else(ina41 == 1 & base::is.na(ina41_1), 2, base::as.numeric(ina41)),
       ina43 = dplyr::if_else(ina43 == 1 & base::is.na(ina43_1), 2, base::as.numeric(ina43)),
@@ -216,6 +219,7 @@ encor %<>%
       tuvo_hijos,
 
       cantidad_ideal_hijos,
+      cantidad_hijos,
       edad_ideal_primer_hijo,
       edad_limit_inf_sexo_mujeres,
       edad_limit_inf_sexo_varones,
@@ -452,7 +456,57 @@ metodos_anticonceptivos <- primera_relacion %>%
 readr::write_rds(x = metodos_anticonceptivos, path = "metodos_anticonceptivos.rds")
 
 
-# para comparar -----------------------------------------------------------
+# ¡Quiero comparar! -------------------------------------------------------
+
+gender = "mujer"
+
+encor %>%
+   dplyr::filter(
+      sexo == gender
+   ) %>%
+   dplyr::group_by(
+      var_x = cantidad_ideal_hijos,
+      var_y = cantidad_hijos
+   ) %>%
+   dplyr::summarise(
+      n = dplyr::n()
+   ) %>%
+   plotly::plot_ly(
+      x = ~var_x,
+      y = ~var_y,
+      type = "scatter",
+      mode = "markers",
+      marker = base::list(
+         size = ~n,
+         sizeref = 1,
+         sizemode = 'area'
+      ),
+      hovertemplate = ~base::paste0(
+         "%{xaxis.title.text}: %{x}",
+         "<br>",
+         "%{yaxis.title.text}: %{y}"
+      ),
+      name = "sexo"
+   ) %>%
+   plotly::layout(
+      xaxis = base::list(
+         title = base::paste0("<b>", "var_x", "</b>")
+      ),
+      yaxis = base::list(
+         title = base::paste0("<b>", "var_y", "</b>")
+      ),
+      scene = base::list(
+         aspectration = base::list(
+            x = 1,
+            y = 1
+         )
+      )
+   )
+
+titulo_x <- "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían?"
+
+stringr::str_length(titulo_x)
+
 
 ## hace scatter plots donde el tamaño sea la cantidad de personas que contestaron a esa pregutna en esas cantidades
 
