@@ -212,8 +212,8 @@ ui <- shiny::tagList(
 
             shiny::h4("Encuesta Nacional de Comportamientos Reproductivos"),
 
-            shiny::p("Compará las respuestas de una misma persona a dos preguntas distintas. El tamaño de los puntos indica la cantiad de personas
-                     que contestaron la misma combinación de respuestas."),
+            shiny::p("Compará las respuestas de una misma persona a dos preguntas distintas. El tamaño de los puntos indica el porcentaje de
+                     personas que contestaron la misma combinación de respuestas."),
 
             shiny::selectInput(
                inputId = "select_qc_sexo",
@@ -303,7 +303,7 @@ server <- function(input, output) {
             variable
          ) %>%
          dplyr::summarise(
-            n = dplyr::n()
+            n = base::sum(peso, na.rm = TRUE)
          ) %>%
          dplyr::mutate(
             prop = n / base::sum(n)
@@ -363,7 +363,7 @@ server <- function(input, output) {
             variable
          ) %>%
          dplyr::summarise(
-            n = dplyr::n()
+            n = base::sum(peso, na.rm = TRUE)
          ) %>%
          dplyr::mutate(
             prop = n / base::sum(n)
@@ -415,7 +415,9 @@ server <- function(input, output) {
             sexo,
             variable
          ) %>%
-         dplyr::tally() %>%
+         dplyr::summarise(
+            n = base::sum(peso, na.rm = TRUE)
+         ) %>%
          dplyr::mutate(
             prop = n / sum(n)
          ) %>%
@@ -478,7 +480,7 @@ server <- function(input, output) {
             var_2 := !!rlang::sym(var_2)
          ) %>%
          dplyr::summarise(
-            n = dplyr::n()
+            n = base::sum(peso, na.rm = TRUE)
          ) %>%
          dplyr::ungroup() %>%
          dplyr::filter(
@@ -487,7 +489,7 @@ server <- function(input, output) {
          dplyr::transmute(
             source = var_1,
             target = stringr::str_c(var_2, " "),
-            value = n
+            value = n / base::sum(n)
          )
 
       # Define nodos
@@ -556,7 +558,7 @@ server <- function(input, output) {
 
       )
 
-      titulo_y <- base::paste(stringr::str_wrap(string = titulo_y, width = 50), "<br>")
+      titulo_y <- base::paste(stringr::str_wrap(string = titulo_y, width = 40), "<br>")
 
       encor %>%
          dplyr::filter(
@@ -567,7 +569,11 @@ server <- function(input, output) {
             var_y = base::as.integer(!!rlang::sym(var_y))
          ) %>%
          dplyr::summarise(
-            n = dplyr::n()
+            n = base::sum(peso, na.rm = TRUE)
+         ) %>%
+         dplyr::ungroup() %>%
+         dplyr::mutate(
+            prop = n / base::sum(n)
          ) %>%
          plotly::plot_ly(
             x = ~var_x,
@@ -580,15 +586,15 @@ server <- function(input, output) {
                   color = color,
                   width = 1
                ),
-               size = ~n,
-               sizeref = 1,
+               size = ~prop * 100,
+               sizeref = .1,
                sizemode = 'area'
             ),
             hovertemplate = ~base::paste0(
-               "<b>Cantidad de encuestados:",
-               formattable::comma(
-                  x = n,
-                  digits = 0L,
+               "<b>Porcentaje de encuestados: ",
+               formattable::percent(
+                  x = prop,
+                  digits = 2L,
                   big.mark = ".",
                   decimal.mark = ","
                )
