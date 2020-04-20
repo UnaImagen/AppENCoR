@@ -5,9 +5,9 @@ account: daczarne
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2104944
-bundleId: 3036282
+bundleId: 3036332
 url: https://daczarne.shinyapps.io/AppENCoR/
-when: 1587341505.76812
+when: 1587342440.29031
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: Base ENCoR terceros.sav|DICCIONARIO DE VARIABLES.xlsx|encor.R|LICENSE|README.md

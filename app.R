@@ -586,12 +586,12 @@ server <- function(input, output) {
                   color = color,
                   width = 1
                ),
-               size = ~prop * 100,
-               sizeref = .1,
+               size = ~(prop * 100 * 5),
+               sizeref = 1,
                sizemode = 'area'
             ),
             hovertemplate = ~base::paste0(
-               "<b>Porcentaje de encuestados: ",
+               "<b>Porcentaje de encuestados: </b>",
                formattable::percent(
                   x = prop,
                   digits = 2L,
