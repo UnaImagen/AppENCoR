@@ -92,19 +92,19 @@ ui <- shiny::tagList(
             shiny::selectInput(
                inputId = "pregunta_motherhood",
                label = "Seleccione una categoría",
-               choices = base::c(
-                  "Madre antes de los 18",
-                  "No tener hijos",
-                  "Vivir en pareja sin casarse",
-                  "Tener hijos con concubino",
-                  "Trabajar tiempo completo con hijos",
-                  "Divorciarse con hijos",
-                  "Cuidado de los hijos",
-                  "Realización (mujeres)",
-                  "Vida familiar",
-                  "Realización (varones)"
+               choices = base::list(
+                  "Madre antes de los 18" = "madre_antes_18",
+                  "No tener hijos" = "mujer_no_tener_hijos",
+                  "Vivir en pareja sin casarse" = "mujer_vivir_en_pareja_sin_casarse",
+                  "Tener hijos con concubino" = "mujer_tener_hijos_con_concu",
+                  "Trabajar tiempo completo con hijos" = "mujer_trabajar_full_con_hijos_menores_3",
+                  "Divorciarse con hijos" = "mujer_divorciarse_con_hijos_menores_12",
+                  "Cuidado de los hijos" = "cuidado_hijos_mujer_ppal",
+                  "Realización (mujeres)" = "mujer_se_realiza_cuando_es_madre",
+                  "Vida familiar" = "mujer_trabaja_full_perjudica_flia",
+                  "Realización (varones)" = "varon_se_realiza_cuando_es_padre"
                ),
-               selected = "Madre antes de los 18"
+               selected = "madre_antes_18"
             ),
 
             shiny::p("Fuente: Instituto Nacional de Estadística")
@@ -636,8 +636,8 @@ server <- function(input, output) {
 
       texto_pregunta <- dplyr::case_when(
 
-         input$pregunta_ideales == "cantidad_ideal_hijos" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían? (Para quienes tuvieron hijos)",
-         input$pregunta_ideales == "edad_ideal_primer_hijo" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería? (Para quienes tuvieron hijos)",
+         input$pregunta_ideales == "cantidad_ideal_hijos" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían? (para quienes tuvieron hijos)",
+         input$pregunta_ideales == "edad_ideal_primer_hijo" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería? (para quienes tuvieron hijos)",
          input$pregunta_ideales == "edad_limit_inf_sexo_" ~ "¿A qué edad le parece que una mujer es demasiado joven para tener relaciones sexuales?",
          input$pregunta_ideales == "edad_limit_inf_hijos_" ~ "¿A qué edad le parece que una mujer es demasiado joven para tener hijos?",
          input$pregunta_ideales == "edad_limit_sup_hijos_" ~ "¿A qué edad le parece que una mujer es demasiado mayor para tener hijos?",
@@ -674,8 +674,8 @@ server <- function(input, output) {
 
       texto_pregunta <- dplyr::case_when(
 
-         input$pregunta_ideales == "cantidad_ideal_hijos" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían? (Para quienes no tuvieron hijos)",
-         input$pregunta_ideales == "edad_ideal_primer_hijo" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería? (Para quienes no tuvieron hijos)",
+         input$pregunta_ideales == "cantidad_ideal_hijos" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían? (para quienes no tuvieron hijos)",
+         input$pregunta_ideales == "edad_ideal_primer_hijo" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería? (para quienes no tuvieron hijos)",
          input$pregunta_ideales == "edad_limit_inf_sexo_" ~ "¿A qué edad le parece que un hombre es demasiado joven para tener relaciones sexuales?",
          input$pregunta_ideales == "edad_limit_inf_hijos_" ~ "¿A qué edad le parece que un hombre es demasiado joven para tener hijos?",
          input$pregunta_ideales == "edad_limit_sup_hijos_" ~ "¿A qué edad le parece que un hombre es demasiado mayor para tener hijos?",
@@ -709,40 +709,22 @@ server <- function(input, output) {
 
 
    # Tab maternidad ----------------------------------------------------------
-   var_name_motherhood <- shiny::reactive({
-
-      dplyr::case_when(
-
-         input$pregunta_motherhood == "Madre antes de los 18" ~ "madre_antes_18",
-         input$pregunta_motherhood == "No tener hijos" ~ "mujer_no_tener_hijos",
-         input$pregunta_motherhood == "Vivir en pareja sin casarse" ~ "mujer_vivir_en_pareja_sin_casarse",
-         input$pregunta_motherhood == "Tener hijos con concubino" ~ "mujer_tener_hijos_con_concu",
-         input$pregunta_motherhood == "Trabajar tiempo completo con hijos" ~ "mujer_trabajar_full_con_hijos_menores_3",
-         input$pregunta_motherhood == "Divorciarse con hijos" ~ "mujer_divorciarse_con_hijos_menores_12",
-         input$pregunta_motherhood == "Cuidado de los hijos" ~ "cuidado_hijos_mujer_ppal",
-         input$pregunta_motherhood == "Realización (mujeres)" ~ "mujer_se_realiza_cuando_es_madre",
-         input$pregunta_motherhood == "Vida familiar" ~ "mujer_trabaja_full_perjudica_flia",
-         input$pregunta_motherhood == "Realización (varones)" ~ "varon_se_realiza_cuando_es_padre"
-
-      )
-
-   })
 
    ## Texto de la pregunta motherhood
    output$texto_pregunta_motherhood <- shiny::renderText({
 
       texto_pregunta <- dplyr::case_when(
 
-         input$pregunta_motherhood == "Madre antes de los 18" ~ "Una mujer puede ser madre antes de los 18 años",
-         input$pregunta_motherhood == "No tener hijos" ~ "Una mujer puede decidir no tener hijos",
-         input$pregunta_motherhood == "Vivir en pareja sin casarse" ~ "Una mujer puede vivir en pareja sin estar casada",
-         input$pregunta_motherhood == "Tener hijos con concubino" ~ "Una mujer puede tener hijos/as con la pareja que vive sin estar casada",
-         input$pregunta_motherhood == "Trabajar tiempo completo con hijos" ~ "Una mujer puede tener un trabajo a tiempo completo teniendo hijos/as menores de 3 años",
-         input$pregunta_motherhood == "Divorciarse con hijos" ~ "Una mujer puede separarse o divorciarse teniendo hijos menores de 12 años",
-         input$pregunta_motherhood == "Cuidado de los hijos" ~ "El cuidado de los hijos debe ser tarea principalmente de la mujer",
-         input$pregunta_motherhood == "Realización (mujeres)" ~ "Una mujer se realiza plenamente cuando es madre",
-         input$pregunta_motherhood == "Vida familiar" ~ "Cuando la mujer tiene un trabajo de jornada completa la vida familiar se perjudica",
-         input$pregunta_motherhood == "Realización (varones)" ~ "Un hombre se realiza plenamente cuando es padre"
+         input$pregunta_motherhood == "madre_antes_18" ~ "Una mujer puede ser madre antes de los 18 años",
+         input$pregunta_motherhood == "mujer_no_tener_hijos" ~ "Una mujer puede decidir no tener hijos",
+         input$pregunta_motherhood == "mujer_vivir_en_pareja_sin_casarse" ~ "Una mujer puede vivir en pareja sin estar casada",
+         input$pregunta_motherhood == "mujer_tener_hijos_con_concu" ~ "Una mujer puede tener hijos/as con la pareja que vive sin estar casada",
+         input$pregunta_motherhood == "mujer_trabajar_full_con_hijos_menores_3" ~ "Una mujer puede tener un trabajo a tiempo completo teniendo hijos/as menores de 3 años",
+         input$pregunta_motherhood == "mujer_divorciarse_con_hijos_menores_12" ~ "Una mujer puede separarse o divorciarse teniendo hijos menores de 12 años",
+         input$pregunta_motherhood == "cuidado_hijos_mujer_ppal" ~ "El cuidado de los hijos debe ser tarea principalmente de la mujer",
+         input$pregunta_motherhood == "mujer_se_realiza_cuando_es_madre" ~ "Una mujer se realiza plenamente cuando es madre",
+         input$pregunta_motherhood == "mujer_trabaja_full_perjudica_flia" ~ "Cuando la mujer tiene un trabajo de jornada completa la vida familiar se perjudica",
+         input$pregunta_motherhood == "varon_se_realiza_cuando_es_padre" ~ "Un hombre se realiza plenamente cuando es padre"
 
       )
 
@@ -754,7 +736,7 @@ server <- function(input, output) {
    output$plot_motherhood <- plotly::renderPlotly({
 
       plotly_question_motherhood(
-         q = var_name_motherhood()
+         q = input$pregunta_motherhood
       )
 
    })
