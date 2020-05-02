@@ -226,39 +226,40 @@ ui <- shiny::tagList(
             shiny::selectInput(
                inputId = "select_qc_var_x",
                label = "... a ... ",
-               choices = base::c(
-                  "Cantidad ideal de hijos",
-                  "Cantidad de hijos",
-                  "Edad ideal para tener el primer hijo",
-                  "Edad límite inferior para tener sexo (mujeres)",
-                  "Edad límite inferior para tener sexo (hombres)",
-                  "Edad límite inferior para tener hijos (mujeres)",
-                  "Edad límite inferior para tener hijos (hombres)",
-                  "Edad límite superior para tener hijos (mujeres)",
-                  "Edad límite superior para tener hijos (hombres)",
-                  "Edad límite inferior para abandonar estudios (mujeres)",
-                  "Edad límite inferior para abandonar estudios (hombres)"
+               choices = base::list(
+                  "Cantidad ideal de hijos" = "cantidad_ideal_hijos",
+                  "Cantidad de hijos" = "cantidad_hijos",
+                  "Edad ideal para tener el primer hijo" = "edad_ideal_primer_hijo",
+                  "Edad límite inferior para tener sexo (mujeres)" = "edad_limit_inf_sexo_mujeres",
+                  "Edad límite inferior para tener sexo (hombres)" = "edad_limit_inf_sexo_varones",
+                  "Edad límite inferior para tener hijos (mujeres)" = "edad_limit_inf_hijos_mujeres",
+                  "Edad límite inferior para tener hijos (hombres)" = "edad_limit_inf_hijos_varones",
+                  "Edad límite superior para tener hijos (mujeres)" = "edad_limit_sup_hijos_mujeres",
+                  "Edad límite superior para tener hijos (hombres)" = "edad_limit_sup_hijos_varones",
+                  "Edad límite inferior para abandonar estudios (mujeres)" = "edad_limit_inf_abandonar_estudios_mujeres",
+                  "Edad límite inferior para abandonar estudios (hombres)" = "edad_limit_inf_abandonar_estudios_varones"
                ),
-               selected = "Cantidad ideal de hijos"
+               selected = "cantidad_ideal_hijos",
+               multiple = FALSE
             ),
 
             shiny::selectInput(
                inputId = "select_qc_var_y",
                label = "... versus ... ",
                choices = base::c(
-                  "Cantidad ideal de hijos",
-                  "Cantidad de hijos",
-                  "Edad ideal para tener el primer hijo",
-                  "Edad límite inferior para tener sexo (mujeres)",
-                  "Edad límite inferior para tener sexo (hombres)",
-                  "Edad límite inferior para tener hijos (mujeres)",
-                  "Edad límite inferior para tener hijos (hombres)",
-                  "Edad límite superior para tener hijos (mujeres)",
-                  "Edad límite superior para tener hijos (hombres)",
-                  "Edad límite inferior para abandonar estudios (mujeres)",
-                  "Edad límite inferior para abandonar estudios (hombres)"
+                  "Cantidad ideal de hijos" = "cantidad_ideal_hijos",
+                  "Cantidad de hijos" = "cantidad_hijos",
+                  "Edad ideal para tener el primer hijo" = "edad_ideal_primer_hijo",
+                  "Edad límite inferior para tener sexo (mujeres)" = "edad_limit_inf_sexo_mujeres",
+                  "Edad límite inferior para tener sexo (hombres)" = "edad_limit_inf_sexo_varones",
+                  "Edad límite inferior para tener hijos (mujeres)" = "edad_limit_inf_hijos_mujeres",
+                  "Edad límite inferior para tener hijos (hombres)" = "edad_limit_inf_hijos_varones",
+                  "Edad límite superior para tener hijos (mujeres)" = "edad_limit_sup_hijos_mujeres",
+                  "Edad límite superior para tener hijos (hombres)" = "edad_limit_sup_hijos_varones",
+                  "Edad límite inferior para abandonar estudios (mujeres)" = "edad_limit_inf_abandonar_estudios_mujeres",
+                  "Edad límite inferior para abandonar estudios (hombres)" = "edad_limit_inf_abandonar_estudios_varones"
                ),
-               selected = "Cantidad de hijos"
+               selected = "cantidad_hijos"
             ),
 
             shiny::p("Fuente: Instituto Nacional de Estadística")
@@ -783,54 +784,14 @@ server <- function(input, output) {
 
 
    # Tab comparar respuestas ---------------------------------------------------
-   var_x <- shiny::reactive({
-
-      dplyr::case_when(
-
-         input$select_qc_var_x == "Cantidad ideal de hijos" ~ "cantidad_ideal_hijos",
-         input$select_qc_var_x == "Cantidad de hijos" ~ "cantidad_hijos",
-         input$select_qc_var_x == "Edad ideal para tener el primer hijo" ~ "edad_ideal_primer_hijo",
-         input$select_qc_var_x == "Edad límite inferior para tener sexo (mujeres)" ~ "edad_limit_inf_sexo_mujeres",
-         input$select_qc_var_x == "Edad límite inferior para tener sexo (hombres)" ~ "edad_limit_inf_sexo_varones",
-         input$select_qc_var_x == "Edad límite inferior para tener hijos (mujeres)" ~ "edad_limit_inf_hijos_mujeres",
-         input$select_qc_var_x == "Edad límite inferior para tener hijos (hombres)" ~ "edad_limit_inf_hijos_varones",
-         input$select_qc_var_x == "Edad límite superior para tener hijos (mujeres)" ~ "edad_limit_sup_hijos_mujeres",
-         input$select_qc_var_x == "Edad límite superior para tener hijos (hombres)" ~ "edad_limit_sup_hijos_varones",
-         input$select_qc_var_x == "Edad límite inferior para abandonar estudios (mujeres)" ~ "edad_limit_inf_abandonar_estudios_mujeres",
-         input$select_qc_var_x == "Edad límite inferior para abandonar estudios (hombres)" ~ "edad_limit_inf_abandonar_estudios_varones"
-
-      )
-
-
-   })
-
-   var_y <- shiny::reactive({
-
-      dplyr::case_when(
-
-         input$select_qc_var_y == "Cantidad ideal de hijos" ~ "cantidad_ideal_hijos",
-         input$select_qc_var_y == "Cantidad de hijos" ~ "cantidad_hijos",
-         input$select_qc_var_y == "Edad ideal para tener el primer hijo" ~ "edad_ideal_primer_hijo",
-         input$select_qc_var_y == "Edad límite inferior para tener sexo (mujeres)" ~ "edad_limit_inf_sexo_mujeres",
-         input$select_qc_var_y == "Edad límite inferior para tener sexo (hombres)" ~ "edad_limit_inf_sexo_varones",
-         input$select_qc_var_y == "Edad límite inferior para tener hijos (mujeres)" ~ "edad_limit_inf_hijos_mujeres",
-         input$select_qc_var_y == "Edad límite inferior para tener hijos (hombres)" ~ "edad_limit_inf_hijos_varones",
-         input$select_qc_var_y == "Edad límite superior para tener hijos (mujeres)" ~ "edad_limit_sup_hijos_mujeres",
-         input$select_qc_var_y == "Edad límite superior para tener hijos (hombres)" ~ "edad_limit_sup_hijos_varones",
-         input$select_qc_var_y == "Edad límite inferior para abandonar estudios (mujeres)" ~ "edad_limit_inf_abandonar_estudios_mujeres",
-         input$select_qc_var_y == "Edad límite inferior para abandonar estudios (hombres)" ~ "edad_limit_inf_abandonar_estudios_varones"
-
-      )
-
-   })
 
    output$plot_comparar <- plotly::renderPlotly({
 
       encor %>%
          plotly_comparacion(
             gender = dplyr::if_else(input$select_qc_sexo == "hombres", "hombre", "mujer"),
-            var_x = var_x(),
-            var_y = var_y()
+            var_x = input$select_qc_var_x,
+            var_y = input$select_qc_var_y
          )
 
    })
