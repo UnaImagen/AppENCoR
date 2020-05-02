@@ -31,15 +31,16 @@ ui <- shiny::tagList(
             shiny::selectInput(
                inputId = "pregunta_ideales",
                label = "Seleccione una categoría",
-               choices = base::c(
-                  "Cantidad ideal de hijos",
-                  "Edad ideal para tener el primer hijo",
-                  "Edad límite inferior para tener sexo",
-                  "Edad límite inferior para tener hijos",
-                  "Edad límite superior para tener hijos",
-                  "Edad límite inferior para abandonar estudios"
+               choices = base::list(
+                  "Cantidad ideal de hijos" = "cantidad_ideal_hijos",
+                  "Edad ideal para tener el primer hijo" = "edad_ideal_primer_hijo",
+                  "Edad límite inferior para tener sexo" = "edad_limit_inf_sexo_",
+                  "Edad límite inferior para tener hijos" = "edad_limit_inf_hijos_",
+                  "Edad límite superior para tener hijos" = "edad_limit_sup_hijos_",
+                  "Edad límite inferior para abandonar estudios" = "edad_limit_inf_abandonar_estudios_"
                ),
-               selected = "Cantidad ideal de hijos"
+               selected = "cantidad_ideal_hijos",
+               multiple = FALSE
             ),
 
             shiny::p("Fuente: Instituto Nacional de Estadística")
@@ -50,7 +51,7 @@ ui <- shiny::tagList(
 
             shiny::div(
                class = 'questionDiv',
-               shiny::h3(
+               shiny::h4(
                   shiny::textOutput(
                      outputId = "texto_pregunta_sup"
                   )
@@ -63,7 +64,7 @@ ui <- shiny::tagList(
 
             shiny::div(
                class = 'questionDiv',
-               shiny::h3(
+               shiny::h4(
                   shiny::textOutput(
                      outputId = "texto_pregunta_inf"
                   )
@@ -114,7 +115,7 @@ ui <- shiny::tagList(
 
             shiny::div(
                class = 'questionDiv',
-               shiny::h3(
+               shiny::h4(
                   shiny::textOutput(
                      outputId = "texto_pregunta_motherhood"
                   )
@@ -629,32 +630,18 @@ server <- function(input, output) {
 
 
    # Tab ideales -------------------------------------------------------------
-   var_name <- shiny::reactive({
-
-      dplyr::case_when(
-
-         input$pregunta_ideales == "Cantidad ideal de hijos" ~ "cantidad_ideal_hijos",
-         input$pregunta_ideales == "Edad ideal para tener el primer hijo" ~ "edad_ideal_primer_hijo",
-         input$pregunta_ideales == "Edad límite inferior para tener sexo" ~ "edad_limit_inf_sexo_",
-         input$pregunta_ideales == "Edad límite inferior para tener hijos" ~ "edad_limit_inf_hijos_",
-         input$pregunta_ideales == "Edad límite superior para tener hijos" ~ "edad_limit_sup_hijos_",
-         input$pregunta_ideales == "Edad límite inferior para abandonar estudios" ~ "edad_limit_inf_abandonar_estudios_"
-
-      )
-
-   })
 
    ## Texto de la pregunta superior
    output$texto_pregunta_sup <- shiny::renderText({
 
       texto_pregunta <- dplyr::case_when(
 
-         input$pregunta_ideales == "Cantidad ideal de hijos" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían? (Para quienes tuvieron hijos)",
-         input$pregunta_ideales == "Edad ideal para tener el primer hijo" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería? (Para quienes tuvieron hijos)",
-         input$pregunta_ideales == "Edad límite inferior para tener sexo" ~ "¿A qué edad le parece que una mujer es demasiado joven para tener relaciones sexuales?",
-         input$pregunta_ideales == "Edad límite inferior para tener hijos" ~ "¿A qué edad le parece que una mujer es demasiado joven para tener hijos?",
-         input$pregunta_ideales == "Edad límite superior para tener hijos" ~ "¿A qué edad le parece que una mujer es demasiado mayor para tener hijos?",
-         input$pregunta_ideales == "Edad límite inferior para abandonar estudios" ~ "¿A qué edad le parece que una mujer es demasiado joven para abandonar los estudios en forma definitiva?"
+         input$pregunta_ideales == "cantidad_ideal_hijos" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían? (Para quienes tuvieron hijos)",
+         input$pregunta_ideales == "edad_ideal_primer_hijo" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería? (Para quienes tuvieron hijos)",
+         input$pregunta_ideales == "edad_limit_inf_sexo_" ~ "¿A qué edad le parece que una mujer es demasiado joven para tener relaciones sexuales?",
+         input$pregunta_ideales == "edad_limit_inf_hijos_" ~ "¿A qué edad le parece que una mujer es demasiado joven para tener hijos?",
+         input$pregunta_ideales == "edad_limit_sup_hijos_" ~ "¿A qué edad le parece que una mujer es demasiado mayor para tener hijos?",
+         input$pregunta_ideales == "edad_limit_inf_abandonar_estudios_" ~ "¿A qué edad le parece que una mujer es demasiado joven para abandonar los estudios en forma definitiva?"
 
       )
 
@@ -665,17 +652,17 @@ server <- function(input, output) {
    ## Plot superior
    output$plot_sup <- plotly::renderPlotly({
 
-      if (var_name() %in% base::c("cantidad_ideal_hijos", "edad_ideal_primer_hijo")) {
+      if (input$pregunta_ideales %in% base::c("cantidad_ideal_hijos", "edad_ideal_primer_hijo")) {
 
          plotly_questions_one(
-            q = var_name(),
+            q = input$pregunta_ideales,
             th = "Sí"
          )
 
       } else {
 
          plotly_questions_two(
-            q = base::paste0(var_name(), "mujeres")
+            q = base::paste0(input$pregunta_ideales, "mujeres")
          )
 
       }
@@ -687,12 +674,12 @@ server <- function(input, output) {
 
       texto_pregunta <- dplyr::case_when(
 
-         input$pregunta_ideales == "Cantidad ideal de hijos" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían? (Para quienes no tuvieron hijos)",
-         input$pregunta_ideales == "Edad ideal para tener el primer hijo" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería? (Para quienes no tuvieron hijos)",
-         input$pregunta_ideales == "Edad límite inferior para tener sexo" ~ "¿A qué edad le parece que un hombre es demasiado joven para tener relaciones sexuales?",
-         input$pregunta_ideales == "Edad límite inferior para tener hijos" ~ "¿A qué edad le parece que un hombre es demasiado joven para tener hijos?",
-         input$pregunta_ideales == "Edad límite superior para tener hijos" ~ "¿A qué edad le parece que un hombre es demasiado mayor para tener hijos?",
-         input$pregunta_ideales == "Edad límite inferior para abandonar estudios" ~ "¿A qué edad le parece que un hombre es demasiado joven para abandonar los estudios en forma definitiva?"
+         input$pregunta_ideales == "cantidad_ideal_hijos" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían? (Para quienes no tuvieron hijos)",
+         input$pregunta_ideales == "edad_ideal_primer_hijo" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería? (Para quienes no tuvieron hijos)",
+         input$pregunta_ideales == "edad_limit_inf_sexo_" ~ "¿A qué edad le parece que un hombre es demasiado joven para tener relaciones sexuales?",
+         input$pregunta_ideales == "edad_limit_inf_hijos_" ~ "¿A qué edad le parece que un hombre es demasiado joven para tener hijos?",
+         input$pregunta_ideales == "edad_limit_sup_hijos_" ~ "¿A qué edad le parece que un hombre es demasiado mayor para tener hijos?",
+         input$pregunta_ideales == "edad_limit_inf_abandonar_estudios_" ~ "¿A qué edad le parece que un hombre es demasiado joven para abandonar los estudios en forma definitiva?"
 
       )
 
@@ -703,17 +690,17 @@ server <- function(input, output) {
    ## Plot inferior
    output$plot_inf <- plotly::renderPlotly({
 
-      if (var_name() %in% base::c("cantidad_ideal_hijos", "edad_ideal_primer_hijo")) {
+      if (input$pregunta_ideales %in% base::c("cantidad_ideal_hijos", "edad_ideal_primer_hijo")) {
 
          plotly_questions_one(
-            q = var_name(),
+            q = input$pregunta_ideales,
             th = "No"
          )
 
       } else {
 
          plotly_questions_two(
-            q = base::paste0(var_name(), "varones")
+            q = base::paste0(input$pregunta_ideales, "varones")
          )
 
       }
