@@ -47,7 +47,7 @@ ui <- shiny::tagList(
 
             shiny::HTML(
                '<a href="https://github.com/daczarne/AppENCoR"><i class="fab fa-github"></i></a>&nbsp;
-               <a href="https://stackoverflow.com/users/5908830/daniel"><i class="fab fa-stack-overflow"></i></a>&nbsp;
+               <a href="https://stackoverflow.com/users/5908830/daniel?tab=profile"><i class="fab fa-stack-overflow"></i></a>&nbsp;
                <a href="https://twitter.com/daczarne"><i class="fab fa-twitter"></i></a>&nbsp;
                <a href="https://www.linkedin.com/in/danielczarnievicz/"><i class="fab fa-linkedin"></i></a>&nbsp;'
             ),
@@ -120,7 +120,7 @@ ui <- shiny::tagList(
 
             shiny::HTML(
                '<a href="https://github.com/daczarne/AppENCoR"><i class="fab fa-github"></i></a>&nbsp;
-               <a href="https://stackoverflow.com/users/5908830/daniel"><i class="fab fa-stack-overflow"></i></a>&nbsp;
+               <a href="https://stackoverflow.com/users/5908830/daniel?tab=profile"><i class="fab fa-stack-overflow"></i></a>&nbsp;
                <a href="https://twitter.com/daczarne"><i class="fab fa-twitter"></i></a>&nbsp;
                <a href="https://www.linkedin.com/in/danielczarnievicz/"><i class="fab fa-linkedin"></i></a>&nbsp;'
             )
@@ -207,7 +207,7 @@ ui <- shiny::tagList(
 
             shiny::HTML(
                '<a href="https://github.com/daczarne/AppENCoR"><i class="fab fa-github"></i></a>&nbsp;
-               <a href="https://stackoverflow.com/users/5908830/daniel"><i class="fab fa-stack-overflow"></i></a>&nbsp;
+               <a href="https://stackoverflow.com/users/5908830/daniel?tab=profile"><i class="fab fa-stack-overflow"></i></a>&nbsp;
                <a href="https://twitter.com/daczarne"><i class="fab fa-twitter"></i></a>&nbsp;
                <a href="https://www.linkedin.com/in/danielczarnievicz/"><i class="fab fa-linkedin"></i></a>&nbsp;'
             )
@@ -295,7 +295,7 @@ ui <- shiny::tagList(
 
             shiny::HTML(
                '<a href="https://github.com/daczarne/AppENCoR"><i class="fab fa-github"></i></a>&nbsp;
-               <a href="https://stackoverflow.com/users/5908830/daniel"><i class="fab fa-stack-overflow"></i></a>&nbsp;
+               <a href="https://stackoverflow.com/users/5908830/daniel?tab=profile"><i class="fab fa-stack-overflow"></i></a>&nbsp;
                <a href="https://twitter.com/daczarne"><i class="fab fa-twitter"></i></a>&nbsp;
                <a href="https://www.linkedin.com/in/danielczarnievicz/"><i class="fab fa-linkedin"></i></a>&nbsp;'
             )
