@@ -274,6 +274,16 @@ ui <- shiny::tagList(
 
          )
 
+      ),
+
+      shiny::tabPanel(
+
+         title = "Source Code",
+
+         href = "https://github.com/daczarne/AppENCoR",
+
+         icon = shiny::icon(name = "github")
+
       )
 
    )
