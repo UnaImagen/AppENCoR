@@ -315,6 +315,7 @@ server <- function(input, output) {
             x = ~variable,
             y = ~prop,
             color = ~sexo,
+            colors = "Dark2",
             type = "bar",
             hovertemplate = ~base::paste0(
                "%{y:0.2%}"
@@ -342,7 +343,22 @@ server <- function(input, output) {
          ) %>%
          plotly::config(
             locale = "es",
-            displayModeBar = TRUE
+            displayModeBar = TRUE,
+            displaylogo = FALSE,
+            modeBarButtonsToRemove = base::c(
+               "zoom2d",
+               "zoomIn2d",
+               "zoomOut2d",
+               "select2d",
+               "drawclosedpath",
+               "lasso2d",
+               "pan2d",
+               "drawrect",
+               "autoScale2d",
+               "hoverClosestCartesian",
+               "hoverCompareCartesian",
+               "toggleSpikelines"
+            )
          )
 
    }
@@ -375,6 +391,7 @@ server <- function(input, output) {
             x = ~variable,
             y = ~prop,
             color = ~sexo,
+            colors = "Dark2",
             type = "bar",
             hovertemplate = ~base::paste0(
                "%{y:0.2%}"
@@ -402,7 +419,22 @@ server <- function(input, output) {
          ) %>%
          plotly::config(
             locale = "es",
-            displayModeBar = TRUE
+            displayModeBar = TRUE,
+            displaylogo = FALSE,
+            modeBarButtonsToRemove = base::c(
+               "zoom2d",
+               "zoomIn2d",
+               "zoomOut2d",
+               "select2d",
+               "drawclosedpath",
+               "lasso2d",
+               "pan2d",
+               "drawrect",
+               "autoScale2d",
+               "hoverClosestCartesian",
+               "hoverCompareCartesian",
+               "toggleSpikelines"
+            )
          )
 
    }
@@ -428,6 +460,7 @@ server <- function(input, output) {
             x = ~variable,
             y = ~prop,
             color = ~sexo,
+            colors = "Dark2",
             type = "bar",
             hovertemplate = ~base::paste0(
                "%{y:0.2%}"
@@ -455,7 +488,22 @@ server <- function(input, output) {
          ) %>%
          plotly::config(
             locale = "es",
-            displayModeBar = TRUE
+            displayModeBar = TRUE,
+            displaylogo = FALSE,
+            modeBarButtonsToRemove = base::c(
+               "zoom2d",
+               "zoomIn2d",
+               "zoomOut2d",
+               "select2d",
+               "drawclosedpath",
+               "lasso2d",
+               "pan2d",
+               "drawrect",
+               "autoScale2d",
+               "hoverClosestCartesian",
+               "hoverCompareCartesian",
+               "toggleSpikelines"
+            )
          )
 
    }
@@ -521,8 +569,8 @@ server <- function(input, output) {
 
       color <- dplyr::case_when(
 
-         input$select_qc_sexo == "hombres" ~ "rgba(102, 194, 165, 1)",
-         input$select_qc_sexo == "mujeres" ~ "rgba(141, 160, 203, 1)"
+         input$select_qc_sexo == "hombres" ~ "rgba(27, 158, 119, 1)",
+         input$select_qc_sexo == "mujeres" ~ "rgba(217, 95, 2, 1)"
 
       )
 
@@ -624,7 +672,22 @@ server <- function(input, output) {
          ) %>%
          plotly::config(
             locale = "es",
-            displayModeBar = TRUE
+            displayModeBar = TRUE,
+            displaylogo = FALSE,
+            modeBarButtonsToRemove = base::c(
+               "zoom2d",
+               "zoomIn2d",
+               "zoomOut2d",
+               "select2d",
+               "drawclosedpath",
+               "lasso2d",
+               "pan2d",
+               "drawrect",
+               "autoScale2d",
+               "hoverClosestCartesian",
+               "hoverCompareCartesian",
+               "toggleSpikelines"
+            )
          )
 
    }
