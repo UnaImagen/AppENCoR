@@ -8,6 +8,19 @@ library(magrittr, quietly = TRUE)
 encor <- readr::read_rds(path = "encor.rds")
 metodos_anticonceptivos <- readr::read_rds(path = "metodos_anticonceptivos.rds")
 
+title <- "Encuesta Nacional de Comportamientos Reproductivos"
+
+data_source <- "Fuente: Instituto Nacional de Estadística"
+
+links <- shiny::HTML(
+   '<a href="https://danielczarnievicz.netlify.app/portfolio/comportamientos-reporductivos/"><i class="fas fa-arrow-circle-left"></i></a>&nbsp;
+   <a href="https://github.com/daczarne/AppENCoR"><i class="fab fa-github"></i></a>&nbsp;
+   <a href="https://stackoverflow.com/users/5908830/daniel?tab=profile"><i class="fab fa-stack-overflow"></i></a>&nbsp;
+   <a href="https://twitter.com/daczarne"><i class="fab fa-twitter"></i></a>&nbsp;
+   <a href="https://www.linkedin.com/in/danielczarnievicz/"><i class="fab fa-linkedin"></i></a>&nbsp;
+   <a href="https://danielczarnievicz.netlify.app/portfolio/"><i class="fas fa-home"></i></a>&nbsp;'
+)
+
 # UI ----------------------------------------------------------------------
 ui <- shiny::tagList(
 
@@ -26,7 +39,7 @@ ui <- shiny::tagList(
 
          shiny::sidebarPanel(
 
-            shiny::h4("Encuesta Nacional de Comportamientos Reproductivos"),
+            shiny::h4(title),
 
             shiny::selectInput(
                inputId = "pregunta_ideales",
@@ -43,14 +56,9 @@ ui <- shiny::tagList(
                multiple = FALSE
             ),
 
-            shiny::HTML('<p>Fuente: Instituto Nacional de Estadística</p>'),
+            shiny::p(data_source),
 
-            shiny::HTML(
-               '<a href="https://github.com/daczarne/AppENCoR"><i class="fab fa-github"></i></a>&nbsp;
-               <a href="https://stackoverflow.com/users/5908830/daniel?tab=profile"><i class="fab fa-stack-overflow"></i></a>&nbsp;
-               <a href="https://twitter.com/daczarne"><i class="fab fa-twitter"></i></a>&nbsp;
-               <a href="https://www.linkedin.com/in/danielczarnievicz/"><i class="fab fa-linkedin"></i></a>&nbsp;'
-            ),
+            shiny::p(links),
 
             shiny::icon(" ")
 
@@ -96,7 +104,7 @@ ui <- shiny::tagList(
 
          shiny::sidebarPanel(
 
-            shiny::h4("Encuesta Nacional de Comportamientos Reproductivos"),
+            shiny::h4(title),
 
             shiny::selectInput(
                inputId = "pregunta_motherhood",
@@ -116,14 +124,9 @@ ui <- shiny::tagList(
                selected = "madre_antes_18"
             ),
 
-            shiny::p("Fuente: Instituto Nacional de Estadística"),
+            shiny::p(data_source),
 
-            shiny::HTML(
-               '<a href="https://github.com/daczarne/AppENCoR"><i class="fab fa-github"></i></a>&nbsp;
-               <a href="https://stackoverflow.com/users/5908830/daniel?tab=profile"><i class="fab fa-stack-overflow"></i></a>&nbsp;
-               <a href="https://twitter.com/daczarne"><i class="fab fa-twitter"></i></a>&nbsp;
-               <a href="https://www.linkedin.com/in/danielczarnievicz/"><i class="fab fa-linkedin"></i></a>&nbsp;'
-            )
+            shiny::p(links),
 
          ),
 
@@ -153,7 +156,7 @@ ui <- shiny::tagList(
 
          shiny::sidebarPanel(
 
-            shiny::h4("Encuesta Nacional de Comportamientos Reproductivos"),
+            shiny::h4(title),
 
             shiny::selectInput(
                inputId = "select_ma_var_1",
@@ -203,14 +206,9 @@ ui <- shiny::tagList(
                animate = TRUE
             ),
 
-            shiny::p("Fuente: Instituto Nacional de Estadística"),
+            shiny::p(data_source),
 
-            shiny::HTML(
-               '<a href="https://github.com/daczarne/AppENCoR"><i class="fab fa-github"></i></a>&nbsp;
-               <a href="https://stackoverflow.com/users/5908830/daniel?tab=profile"><i class="fab fa-stack-overflow"></i></a>&nbsp;
-               <a href="https://twitter.com/daczarne"><i class="fab fa-twitter"></i></a>&nbsp;
-               <a href="https://www.linkedin.com/in/danielczarnievicz/"><i class="fab fa-linkedin"></i></a>&nbsp;'
-            )
+            shiny::p(links),
 
          ),
 
@@ -293,12 +291,7 @@ ui <- shiny::tagList(
 
             shiny::p("Fuente: Instituto Nacional de Estadística"),
 
-            shiny::HTML(
-               '<a href="https://github.com/daczarne/AppENCoR"><i class="fab fa-github"></i></a>&nbsp;
-               <a href="https://stackoverflow.com/users/5908830/daniel?tab=profile"><i class="fab fa-stack-overflow"></i></a>&nbsp;
-               <a href="https://twitter.com/daczarne"><i class="fab fa-twitter"></i></a>&nbsp;
-               <a href="https://www.linkedin.com/in/danielczarnievicz/"><i class="fab fa-linkedin"></i></a>&nbsp;'
-            )
+            shiny::p(links),
 
          ),
 
