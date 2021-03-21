@@ -2,15 +2,18 @@
 #### ENCoR ####
 #=============#
 
-# library(survey)
-library(magrittr)
 
-# Carga datos -------------------------------------------------------------
+`%>%` <- magrittr::`%>%`
+`%<>%` <- magrittr::`%<>%`
+
+
+# Load data -------------------------------------------------------------
 encor <- haven::read_sav(
-   file = here::here("Base ENCoR terceros.sav")
+   file = here::here("data-preparation", "Base ENCoR terceros.sav")
 )
 
-# Genera rds para App -----------------------------------------------------
+
+# Build app rds ---------------------------------------------------------
 encor %<>%
    dplyr::mutate(
       # Sexo
@@ -246,12 +249,13 @@ encor %<>%
    ) %>%
    dplyr::distinct()
 
-readr::write_rds(x = encor, path = here::here("encor.rds"))
+
+readr::write_rds(x = encor, file = here::here("encor.rds"))
 
 
 # Métodos anticonceptivos -------------------------------------------------
 metodos_anticonceptivos <- haven::read_sav(
-   file = here::here("Base ENCoR terceros.sav")
+   file = here::here("data-preparation", "Base ENCoR terceros.sav")
 ) %>%
    dplyr::mutate(
       # Sexodu
@@ -458,7 +462,9 @@ metodos_anticonceptivos <- primera_relacion %>%
       by = base::c("numero", "nper")
    )
 
-readr::write_rds(x = metodos_anticonceptivos, path = "metodos_anticonceptivos.rds")
+
+readr::write_rds(x = metodos_anticonceptivos, file = here::here("metodos_anticonceptivos.rds"))
+
 
 #===============#
 #### THE END ####
