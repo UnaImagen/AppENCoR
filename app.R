@@ -312,13 +312,6 @@ ui <- shiny::tagList(
 # Server ------------------------------------------------------------------
 server <- function(input, output) {
 
-   # Funciones ---------------------------------------------------------------
-
-   source(
-      file = "www/funciones_app.R",
-      encoding = "UTF-8"
-   )
-
    # Tab ideales -------------------------------------------------------------
 
    ## Texto de la pregunta superior
