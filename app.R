@@ -164,19 +164,19 @@ ui <- shiny::tagList(
             shiny::selectInput(
                inputId = "select_ma_rango_edad",
                label = "Edad del encuestado/a: ",
-               choices = base::levels(metodos_anticonceptivos$rango_edad),
-               selected = base::levels(metodos_anticonceptivos$rango_edad),
+               choices = base::levels(metodos_anticonceptivos[["rango_edad"]]),
+               selected = base::levels(metodos_anticonceptivos[["rango_edad"]]),
                multiple = TRUE
             ),
 
             shiny::sliderInput(
                inputId = "select_ma_rango_edad_primera_relacion",
                label = "Edad a la que tuvo la primer relación: ",
-               min = base::min(metodos_anticonceptivos$edad_primera_relacion, na.rm = TRUE),
-               max = base::max(metodos_anticonceptivos$edad_primera_relacion, na.rm = TRUE),
+               min = base::min(metodos_anticonceptivos[["edad_primera_relacion"]], na.rm = TRUE),
+               max = base::max(metodos_anticonceptivos[["edad_primera_relacion"]], na.rm = TRUE),
                value = base::c(
-                  base::min(metodos_anticonceptivos$edad_primera_relacion, na.rm = TRUE),
-                  base::max(metodos_anticonceptivos$edad_primera_relacion, na.rm = TRUE)),
+                  base::min(metodos_anticonceptivos[["edad_primera_relacion"]], na.rm = TRUE),
+                  base::max(metodos_anticonceptivos[["edad_primera_relacion"]], na.rm = TRUE)),
                step = 1,
                animate = TRUE
             ),
@@ -282,16 +282,16 @@ server <- function(input, output) {
    # Tab ideales -------------------------------------------------------------
 
    ## Texto de la pregunta superior
-   output$texto_pregunta_sup <- shiny::renderText({
+   output[["texto_pregunta_sup"]] <- shiny::renderText({
 
       texto_pregunta <- dplyr::case_when(
 
-         input$pregunta_ideales == "cantidad_ideal_hijos" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían? (para quienes tuvieron hijos)",
-         input$pregunta_ideales == "edad_ideal_primer_hijo" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería? (para quienes tuvieron hijos)",
-         input$pregunta_ideales == "edad_limit_inf_sexo_" ~ "¿A qué edad le parece que una mujer es demasiado joven para tener relaciones sexuales?",
-         input$pregunta_ideales == "edad_limit_inf_hijos_" ~ "¿A qué edad le parece que una mujer es demasiado joven para tener hijos?",
-         input$pregunta_ideales == "edad_limit_sup_hijos_" ~ "¿A qué edad le parece que una mujer es demasiado mayor para tener hijos?",
-         input$pregunta_ideales == "edad_limit_inf_abandonar_estudios_" ~ "¿A qué edad le parece que una mujer es demasiado joven para abandonar los estudios en forma definitiva?"
+         input[["pregunta_ideales"]] == "cantidad_ideal_hijos" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían? (para quienes tuvieron hijos)",
+         input[["pregunta_ideales"]] == "edad_ideal_primer_hijo" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería? (para quienes tuvieron hijos)",
+         input[["pregunta_ideales"]] == "edad_limit_inf_sexo_" ~ "¿A qué edad le parece que una mujer es demasiado joven para tener relaciones sexuales?",
+         input[["pregunta_ideales"]] == "edad_limit_inf_hijos_" ~ "¿A qué edad le parece que una mujer es demasiado joven para tener hijos?",
+         input[["pregunta_ideales"]] == "edad_limit_sup_hijos_" ~ "¿A qué edad le parece que una mujer es demasiado mayor para tener hijos?",
+         input[["pregunta_ideales"]] == "edad_limit_inf_abandonar_estudios_" ~ "¿A qué edad le parece que una mujer es demasiado joven para abandonar los estudios en forma definitiva?"
 
       )
 
@@ -300,13 +300,13 @@ server <- function(input, output) {
    })
 
    ## Plot superior
-   output$plot_sup <- plotly::renderPlotly({
+   output[["plot_sup"]] <- plotly::renderPlotly({
 
-      if (input$pregunta_ideales %in% base::c("cantidad_ideal_hijos", "edad_ideal_primer_hijo")) {
+      if (input[["pregunta_ideales"]] %in% base::c("cantidad_ideal_hijos", "edad_ideal_primer_hijo")) {
 
          encor %>%
             plotly_questions_one(
-               q = input$pregunta_ideales,
+               q = input[["pregunta_ideales"]],
                th = "Sí"
             )
 
@@ -314,7 +314,7 @@ server <- function(input, output) {
 
          encor %>%
             plotly_questions_two(
-               q = base::paste0(input$pregunta_ideales, "mujeres")
+               q = base::paste0(input[["pregunta_ideales"]], "mujeres")
             )
 
       }
@@ -322,16 +322,16 @@ server <- function(input, output) {
    })
 
    ## Texto de la pregunta inferior
-   output$texto_pregunta_inf <- shiny::renderText({
+   output[["texto_pregunta_inf"]] <- shiny::renderText({
 
       texto_pregunta <- dplyr::case_when(
 
-         input$pregunta_ideales == "cantidad_ideal_hijos" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían? (para quienes no tuvieron hijos)",
-         input$pregunta_ideales == "edad_ideal_primer_hijo" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería? (para quienes no tuvieron hijos)",
-         input$pregunta_ideales == "edad_limit_inf_sexo_" ~ "¿A qué edad le parece que un hombre es demasiado joven para tener relaciones sexuales?",
-         input$pregunta_ideales == "edad_limit_inf_hijos_" ~ "¿A qué edad le parece que un hombre es demasiado joven para tener hijos?",
-         input$pregunta_ideales == "edad_limit_sup_hijos_" ~ "¿A qué edad le parece que un hombre es demasiado mayor para tener hijos?",
-         input$pregunta_ideales == "edad_limit_inf_abandonar_estudios_" ~ "¿A qué edad le parece que un hombre es demasiado joven para abandonar los estudios en forma definitiva?"
+         input[["pregunta_ideales"]] == "cantidad_ideal_hijos" ~ "Si pudiera volver atrás en el tiempo y elegir el número de hijos para tener en su vida, ¿cuántos serían? (para quienes no tuvieron hijos)",
+         input[["pregunta_ideales"]] == "edad_ideal_primer_hijo" ~ "Si pudiera volver atrás en el tiempo y elegir la edad a la cual tener su primer hijo/a, ¿cuál sería? (para quienes no tuvieron hijos)",
+         input[["pregunta_ideales"]] == "edad_limit_inf_sexo_" ~ "¿A qué edad le parece que un hombre es demasiado joven para tener relaciones sexuales?",
+         input[["pregunta_ideales"]] == "edad_limit_inf_hijos_" ~ "¿A qué edad le parece que un hombre es demasiado joven para tener hijos?",
+         input[["pregunta_ideales"]] == "edad_limit_sup_hijos_" ~ "¿A qué edad le parece que un hombre es demasiado mayor para tener hijos?",
+         input[["pregunta_ideales"]] == "edad_limit_inf_abandonar_estudios_" ~ "¿A qué edad le parece que un hombre es demasiado joven para abandonar los estudios en forma definitiva?"
 
       )
 
@@ -340,13 +340,13 @@ server <- function(input, output) {
    })
 
    ## Plot inferior
-   output$plot_inf <- plotly::renderPlotly({
+   output[["plot_inf"]] <- plotly::renderPlotly({
 
-      if (input$pregunta_ideales %in% base::c("cantidad_ideal_hijos", "edad_ideal_primer_hijo")) {
+      if (input[["pregunta_ideales"]] %in% base::c("cantidad_ideal_hijos", "edad_ideal_primer_hijo")) {
 
          encor %>%
             plotly_questions_one(
-               q = input$pregunta_ideales,
+               q = input[["pregunta_ideales"]],
                th = "No"
             )
 
@@ -354,7 +354,7 @@ server <- function(input, output) {
 
          encor %>%
             plotly_questions_two(
-               q = base::paste0(input$pregunta_ideales, "varones")
+               q = base::paste0(input[["pregunta_ideales"]], "varones")
             )
 
       }
@@ -365,33 +365,28 @@ server <- function(input, output) {
    # Tab maternidad ----------------------------------------------------------
 
    ## Texto de la pregunta motherhood
-   output$texto_pregunta_motherhood <- shiny::renderText({
-
+   output[["texto_pregunta_motherhood"]] <- shiny::renderText({
       texto_pregunta <- dplyr::case_when(
-
-         input$pregunta_motherhood == "madre_antes_18" ~ "Una mujer puede ser madre antes de los 18 años",
-         input$pregunta_motherhood == "mujer_no_tener_hijos" ~ "Una mujer puede decidir no tener hijos",
-         input$pregunta_motherhood == "mujer_vivir_en_pareja_sin_casarse" ~ "Una mujer puede vivir en pareja sin estar casada",
-         input$pregunta_motherhood == "mujer_tener_hijos_con_concu" ~ "Una mujer puede tener hijos/as con la pareja que vive sin estar casada",
-         input$pregunta_motherhood == "mujer_trabajar_full_con_hijos_menores_3" ~ "Una mujer puede tener un trabajo a tiempo completo teniendo hijos/as menores de 3 años",
-         input$pregunta_motherhood == "mujer_divorciarse_con_hijos_menores_12" ~ "Una mujer puede separarse o divorciarse teniendo hijos menores de 12 años",
-         input$pregunta_motherhood == "cuidado_hijos_mujer_ppal" ~ "El cuidado de los hijos debe ser tarea principalmente de la mujer",
-         input$pregunta_motherhood == "mujer_se_realiza_cuando_es_madre" ~ "Una mujer se realiza plenamente cuando es madre",
-         input$pregunta_motherhood == "mujer_trabaja_full_perjudica_flia" ~ "Cuando la mujer tiene un trabajo de jornada completa la vida familiar se perjudica",
-         input$pregunta_motherhood == "varon_se_realiza_cuando_es_padre" ~ "Un hombre se realiza plenamente cuando es padre"
-
+         input[["pregunta_motherhood"]] == "madre_antes_18" ~ "Una mujer puede ser madre antes de los 18 años",
+         input[["pregunta_motherhood"]] == "mujer_no_tener_hijos" ~ "Una mujer puede decidir no tener hijos",
+         input[["pregunta_motherhood"]] == "mujer_vivir_en_pareja_sin_casarse" ~ "Una mujer puede vivir en pareja sin estar casada",
+         input[["pregunta_motherhood"]] == "mujer_tener_hijos_con_concu" ~ "Una mujer puede tener hijos/as con la pareja que vive sin estar casada",
+         input[["pregunta_motherhood"]] == "mujer_trabajar_full_con_hijos_menores_3" ~ "Una mujer puede tener un trabajo a tiempo completo teniendo hijos/as menores de 3 años",
+         input[["pregunta_motherhood"]] == "mujer_divorciarse_con_hijos_menores_12" ~ "Una mujer puede separarse o divorciarse teniendo hijos menores de 12 años",
+         input[["pregunta_motherhood"]] == "cuidado_hijos_mujer_ppal" ~ "El cuidado de los hijos debe ser tarea principalmente de la mujer",
+         input[["pregunta_motherhood"]] == "mujer_se_realiza_cuando_es_madre" ~ "Una mujer se realiza plenamente cuando es madre",
+         input[["pregunta_motherhood"]] == "mujer_trabaja_full_perjudica_flia" ~ "Cuando la mujer tiene un trabajo de jornada completa la vida familiar se perjudica",
+         input[["pregunta_motherhood"]] == "varon_se_realiza_cuando_es_padre" ~ "Un hombre se realiza plenamente cuando es padre"
       )
-
       base::paste("Pregunta:", texto_pregunta)
-
    })
 
    ## Plot motherhood
-   output$plot_motherhood <- plotly::renderPlotly({
+   output[["plot_motherhood"]] <- plotly::renderPlotly({
 
       encor %>%
          plotly_question_motherhood(
-            q = input$pregunta_motherhood
+            q = input[["pregunta_motherhood"]]
          )
 
    })
@@ -400,36 +395,37 @@ server <- function(input, output) {
    # Tab métodos anticonceptivos ---------------------------------------------
 
    ## Texto explicativo
-   output$texto_metodos_anticonceptivos <- shiny::renderText({
-
+   output[["texto_metodos_anticonceptivos"]] <- shiny::renderText({
       base::paste(
          "Métodos anticonceptivos utilizados por los encuestados, para aquellos que ya tuvieron su primer relación sexual. En la columna izquierda,
          los métodos utilizados durante",
          dplyr::case_when(
-            input$select_ma_var_1 == "metodo_primera_relacion" ~ "la primer relación.",
-            input$select_ma_var_1 == "metodo_ultimos_seis_meses" ~ "los últimos seis meses."
+            input[["select_ma_var_1"]] == "metodo_primera_relacion" ~ "la primer relación.",
+            input[["select_ma_var_1"]] == "metodo_ultimos_seis_meses" ~ "los últimos seis meses."
          ),
          "En la columna de la derecha, los métodos utilizados durante",
          dplyr::case_when(
-            input$select_ma_var_2 == "metodo_ultimos_seis_meses" ~ "los últimos seis meses.",
-            input$select_ma_var_2 == "metodo_ultima_relacion" ~ "la última relación."
+            input[["select_ma_var_2"]] == "metodo_ultimos_seis_meses" ~ "los últimos seis meses.",
+            input[["select_ma_var_2"]] == "metodo_ultima_relacion" ~ "la última relación."
          )
       )
-
    })
 
    ## Sankey plot
-   output$sankey_metodos_anticonceptivos <- networkD3::renderSankeyNetwork({
-
+   output[["sankey_metodos_anticonceptivos"]] <- networkD3::renderSankeyNetwork({
       metodos_anticonceptivos %>%
          dplyr::filter(
-            sexo %in% input$select_ma_sexo,
-            rango_edad %in% input$select_ma_rango_edad,
-            dplyr::between(edad_primera_relacion, input$select_ma_rango_edad_primera_relacion[1], input$select_ma_rango_edad_primera_relacion[2])
+            sexo %in% input[["select_ma_sexo"]],
+            rango_edad %in% input[["select_ma_rango_edad"]],
+            dplyr::between(
+               x = edad_primera_relacion,
+               left = input[["select_ma_rango_edad_primera_relacion"]][1],
+               right = input[["select_ma_rango_edad_primera_relacion"]][2]
+            )
          ) %>%
          generar_sankey(
-            var_1 = input$select_ma_var_1,
-            var_2 = input$select_ma_var_2
+            var_1 = input[["select_ma_var_1"]],
+            var_2 = input[["select_ma_var_2"]]
          )
 
    })
@@ -437,14 +433,14 @@ server <- function(input, output) {
 
    # Tab comparar respuestas ---------------------------------------------------
 
-   output$plot_comparar <- plotly::renderPlotly({
+   output[["plot_comparar"]] <- plotly::renderPlotly({
 
       ## Plot que compara las respuestas
       encor %>%
          plotly_comparacion(
-            gender = dplyr::if_else(input$select_qc_sexo == "hombres", "hombre", "mujer"),
-            var_x = input$select_qc_var_x,
-            var_y = input$select_qc_var_y
+            gender = dplyr::if_else(input[["select_qc_sexo"]] == "hombres", "hombre", "mujer"),
+            var_x = input[["select_qc_var_x"]],
+            var_y = input[["select_qc_var_y"]]
          )
 
    })
