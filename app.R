@@ -5,8 +5,8 @@
 library(shiny, quietly = TRUE)
 library(magrittr, quietly = TRUE)
 
-encor <- readr::read_rds(path = "encor.rds")
-metodos_anticonceptivos <- readr::read_rds(path = "metodos_anticonceptivos.rds")
+encor <- readr::read_rds(file = "encor.rds")
+metodos_anticonceptivos <- readr::read_rds(file = "metodos_anticonceptivos.rds")
 
 title <- "Encuesta Nacional de Comportamientos Reproductivos"
 
@@ -24,7 +24,7 @@ links <- shiny::HTML(
 # UI ----------------------------------------------------------------------
 ui <- shiny::tagList(
 
-   shiny::includeCSS(path = "style.css"),
+   shiny::includeCSS(path = "www/style.css"),
 
    shiny::navbarPage(
 
