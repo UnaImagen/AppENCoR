@@ -66,29 +66,12 @@ ui <- shiny::tagList(
 
          shiny::mainPanel(
 
-            shiny::div(
-               class = 'questionDiv',
-               shiny::h4(
-                  shiny::textOutput(
-                     outputId = "texto_pregunta_sup"
-                  )
-               )
-            ),
-
+            questionDivUI("texto_pregunta_sup"),
             plotly::plotlyOutput(
                outputId = "plot_sup"
             ),
 
-            shiny::div(
-               class = 'questionDiv',
-               shiny::h4(
-                  shiny::textOutput(
-                     outputId = "texto_pregunta_inf"
-                  )
-               )
-
-            ),
-
+            questionDivUI("texto_pregunta_inf"),
             plotly::plotlyOutput(
                outputId = "plot_inf"
             )
@@ -132,15 +115,7 @@ ui <- shiny::tagList(
 
          shiny::mainPanel(
 
-            shiny::div(
-               class = 'questionDiv',
-               shiny::h4(
-                  shiny::textOutput(
-                     outputId = "texto_pregunta_motherhood"
-                  )
-               )
-            ),
-
+            questionDivUI("texto_pregunta_motherhood"),
             plotly::plotlyOutput(
                outputId = "plot_motherhood"
             )
@@ -214,15 +189,7 @@ ui <- shiny::tagList(
 
          shiny::mainPanel(
 
-            shiny::div(
-               class = 'questionDiv',
-               shiny::p(
-                  shiny::textOutput(
-                     outputId = "texto_metodos_anticonceptivos"
-                  )
-               )
-            ),
-
+            questionDivUI("texto_metodos_anticonceptivos"),
             networkD3::sankeyNetworkOutput(
                outputId = "sankey_metodos_anticonceptivos"
             )
